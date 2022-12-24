@@ -1,4 +1,4 @@
-package br.dev.s2w.di.modelo;
+package br.dev.s2w.jfoods.api.di.modelo;
 
 public class Cliente {
 

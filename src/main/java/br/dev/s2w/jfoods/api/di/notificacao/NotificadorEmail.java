@@ -1,10 +1,11 @@
-package br.dev.s2w.di.notificacao;
+package br.dev.s2w.jfoods.api.di.notificacao;
 
-import br.dev.s2w.di.modelo.Cliente;
+import br.dev.s2w.jfoods.api.di.modelo.Cliente;
+import org.springframework.stereotype.Component;
 
-public class NotificadorEmail implements Notificador{
+@Component
+public class NotificadorEmail {
 
-    @Override
     public void notificar(Cliente cliente, String mensagem) {
         System.out.printf("Notificando %s através do email %s: %s\n", cliente.getNome(), cliente.getEmail(), mensagem);
     }
