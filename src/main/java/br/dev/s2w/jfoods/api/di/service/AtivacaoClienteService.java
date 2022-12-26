@@ -4,7 +4,6 @@ import br.dev.s2w.jfoods.api.di.modelo.Cliente;
 import br.dev.s2w.jfoods.api.di.notificacao.Notificador;
 import org.springframework.stereotype.Component;
 
-@Component
 public class AtivacaoClienteService {
 
     private Notificador notificador;
