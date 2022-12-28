@@ -1,15 +1,16 @@
 package br.dev.s2w.jfoods.api.di.service;
 
 import br.dev.s2w.jfoods.api.di.modelo.Cliente;
+import br.dev.s2w.jfoods.api.di.notificacao.NivelUrgencia;
 import br.dev.s2w.jfoods.api.di.notificacao.Notificador;
+import br.dev.s2w.jfoods.api.di.notificacao.TipoDoNotificador;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
 
 @Component
 public class AtivacaoClienteService {
 
-    @Qualifier("urgente")
+    @TipoDoNotificador(NivelUrgencia.URGENTE)
     @Autowired
     private Notificador notificador;
 
