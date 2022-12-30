@@ -5,9 +5,8 @@ import br.dev.s2w.jfoods.api.di.notificacao.NivelUrgencia;
 import br.dev.s2w.jfoods.api.di.notificacao.Notificador;
 import br.dev.s2w.jfoods.api.di.notificacao.TipoDoNotificador;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
 
-@Component
+//@Component
 public class AtivacaoClienteService {
 
     @TipoDoNotificador(NivelUrgencia.URGENTE)
@@ -18,5 +17,15 @@ public class AtivacaoClienteService {
         cliente.ativar();
 
         notificador.notificar(cliente, "Seu cadastro no sistema agora está ativo!");
+    }
+
+    //@PostConstruct
+    public void init() {
+        System.out.println("init() " + notificador);
+    }
+
+    //@PreDestroy
+    public void destroy() {
+        System.out.println("destroy() " + notificador);
     }
 }
