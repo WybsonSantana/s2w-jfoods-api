@@ -4,14 +4,9 @@ import br.dev.s2w.jfoods.api.di.modelo.Cliente;
 import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Component;
 
-@Profile("prod")
 @TipoDoNotificador(NivelUrgencia.URGENTE)
 @Component
 public class NotificadorSMS implements Notificador {
-
-    public NotificadorSMS() {
-        System.out.println("NotificadorSMS");
-    }
 
     @Override
     public void notificar(Cliente cliente, String mensagem) {

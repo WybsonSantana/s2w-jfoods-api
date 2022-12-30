@@ -1,31 +1,20 @@
 package br.dev.s2w.jfoods.api.di.service;
 
+import br.dev.s2w.jfoods.api.di.event.ClienteAtivadoEvent;
 import br.dev.s2w.jfoods.api.di.modelo.Cliente;
-import br.dev.s2w.jfoods.api.di.notificacao.NivelUrgencia;
-import br.dev.s2w.jfoods.api.di.notificacao.Notificador;
-import br.dev.s2w.jfoods.api.di.notificacao.TipoDoNotificador;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.ApplicationEventPublisher;
+import org.springframework.stereotype.Component;
 
-//@Component
+@Component
 public class AtivacaoClienteService {
 
-    @TipoDoNotificador(NivelUrgencia.URGENTE)
     @Autowired
-    private Notificador notificador;
+    private ApplicationEventPublisher eventPublisher;
 
     public void ativar(Cliente cliente) {
         cliente.ativar();
 
-        notificador.notificar(cliente, "Seu cadastro no sistema agora está ativo!");
-    }
-
-    //@PostConstruct
-    public void init() {
-        System.out.println("init() " + notificador);
-    }
-
-    //@PreDestroy
-    public void destroy() {
-        System.out.println("destroy() " + notificador);
+        eventPublisher.publishEvent(new ClienteAtivadoEvent(cliente));
     }
 }
