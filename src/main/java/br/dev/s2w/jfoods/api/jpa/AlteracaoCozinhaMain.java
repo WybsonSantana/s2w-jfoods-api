@@ -2,6 +2,7 @@ package br.dev.s2w.jfoods.api.jpa;
 
 import br.dev.s2w.jfoods.api.S2wJfoodsApiApplication;
 import br.dev.s2w.jfoods.api.domain.model.Cozinha;
+import br.dev.s2w.jfoods.api.domain.repository.CozinhaRepository;
 import org.springframework.boot.WebApplicationType;
 import org.springframework.boot.builder.SpringApplicationBuilder;
 import org.springframework.context.ApplicationContext;
@@ -12,12 +13,12 @@ public class AlteracaoCozinhaMain {
                 .web(WebApplicationType.NONE)
                 .run(args);
 
-        CadastroCozinha cadastroCozinha = applicationContext.getBean(CadastroCozinha.class);
+        CozinhaRepository cozinhaRepository = applicationContext.getBean(CozinhaRepository.class);
 
         Cozinha cozinha = new Cozinha();
         cozinha.setId(1L);
         cozinha.setNome("Brasileira");
 
-        cadastroCozinha.salvar(cozinha);
+        cozinhaRepository.salvar(cozinha);
     }
 }

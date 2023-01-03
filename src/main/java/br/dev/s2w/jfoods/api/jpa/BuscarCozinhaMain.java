@@ -2,6 +2,7 @@ package br.dev.s2w.jfoods.api.jpa;
 
 import br.dev.s2w.jfoods.api.S2wJfoodsApiApplication;
 import br.dev.s2w.jfoods.api.domain.model.Cozinha;
+import br.dev.s2w.jfoods.api.domain.repository.CozinhaRepository;
 import org.springframework.boot.WebApplicationType;
 import org.springframework.boot.builder.SpringApplicationBuilder;
 import org.springframework.context.ApplicationContext;
@@ -12,9 +13,9 @@ public class BuscarCozinhaMain {
                 .web(WebApplicationType.NONE)
                 .run(args);
 
-        CadastroCozinha cadastroCozinha = applicationContext.getBean(CadastroCozinha.class);
+        CozinhaRepository cozinhaRepository = applicationContext.getBean(CozinhaRepository.class);
 
-        Cozinha cozinha = cadastroCozinha.buscar(1L);
+        Cozinha cozinha = cozinhaRepository.buscar(1L);
 
         System.out.println(cozinha.getNome());
     }
