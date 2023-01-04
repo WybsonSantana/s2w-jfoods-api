@@ -1,4 +1,4 @@
-package br.dev.s2w.jfoods.api.infrastructure;
+package br.dev.s2w.jfoods.api.infrastructure.repository;
 
 import br.dev.s2w.jfoods.api.domain.model.Restaurante;
 import br.dev.s2w.jfoods.api.domain.repository.RestauranteRepository;
