@@ -1,5 +1,7 @@
 package br.dev.s2w.jfoods.api.gateway.controller;
 
+import br.dev.s2w.jfoods.api.domain.exception.EntidadeEmUsoException;
+import br.dev.s2w.jfoods.api.domain.exception.EntidadeNaoEncontradaException;
 import br.dev.s2w.jfoods.api.domain.model.Cozinha;
 import br.dev.s2w.jfoods.api.domain.repository.CozinhaRepository;
 import br.dev.s2w.jfoods.api.domain.service.CadastroCozinhaService;
@@ -71,16 +73,11 @@ public class CozinhaController {
     @DeleteMapping("/{cozinhaId}")
     public ResponseEntity<Cozinha> remover(@PathVariable Long cozinhaId) {
         try {
-            Cozinha cozinha = cozinhaRepository.buscar(cozinhaId);
-
-            if (cozinha != null) {
-                cozinhaRepository.remover(cozinha);
-
-                return ResponseEntity.noContent().build();
-            }
-
+            cadastroCozinha.excluir(cozinhaId);
+            return ResponseEntity.noContent().build();
+        } catch (EntidadeNaoEncontradaException e) {
             return ResponseEntity.notFound().build();
-        } catch (DataIntegrityViolationException exception) {
+        } catch (EntidadeEmUsoException e) {
             return ResponseEntity.status(HttpStatus.CONFLICT).build();
         }
     }
