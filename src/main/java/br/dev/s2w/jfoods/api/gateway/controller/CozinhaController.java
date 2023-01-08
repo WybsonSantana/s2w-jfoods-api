@@ -2,6 +2,7 @@ package br.dev.s2w.jfoods.api.gateway.controller;
 
 import br.dev.s2w.jfoods.api.domain.model.Cozinha;
 import br.dev.s2w.jfoods.api.domain.repository.CozinhaRepository;
+import br.dev.s2w.jfoods.api.domain.service.CadastroCozinhaService;
 import br.dev.s2w.jfoods.api.gateway.model.CozinhasXmlWrapper;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,6 +20,9 @@ public class CozinhaController {
 
     @Autowired
     private CozinhaRepository cozinhaRepository;
+
+    @Autowired
+    private CadastroCozinhaService cadastroCozinha;
 
     @GetMapping
     public List<Cozinha> listarJson() {
@@ -44,7 +48,7 @@ public class CozinhaController {
     @ResponseStatus(HttpStatus.CREATED)
     @PostMapping
     public Cozinha adicionar(@RequestBody Cozinha cozinha) {
-        return cozinhaRepository.salvar(cozinha);
+        return cadastroCozinha.salvar(cozinha);
     }
 
     @PutMapping("/{cozinhaId}")
