@@ -8,7 +8,7 @@ import java.util.List;
 
     List<Restaurante> listar();
 
-    Restaurante buscar(Long id);
+    Restaurante buscar(Long restauranteId);
 
     Restaurante salvar(Restaurante restaurante);
 

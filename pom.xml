@@ -56,10 +56,6 @@
 			<artifactId>lombok</artifactId>
 			<version>1.18.24</version>
 		</dependency>
-		<dependency>
-			<groupId>com.fasterxml.jackson.dataformat</groupId>
-			<artifactId>jackson-dataformat-xml</artifactId>
-		</dependency>
 	</dependencies>
 
 	<build>

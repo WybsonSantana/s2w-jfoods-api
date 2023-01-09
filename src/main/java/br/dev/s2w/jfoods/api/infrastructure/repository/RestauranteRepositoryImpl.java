@@ -21,8 +21,8 @@ public class RestauranteRepositoryImpl implements RestauranteRepository {
     }
 
     @Override
-    public Restaurante buscar(Long id) {
-        return manager.find(Restaurante.class, id);
+    public Restaurante buscar(Long restauranteId) {
+        return manager.find(Restaurante.class, restauranteId);
     }
 
     @Transactional
