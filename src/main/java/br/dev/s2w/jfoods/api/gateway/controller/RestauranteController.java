@@ -4,6 +4,7 @@ import br.dev.s2w.jfoods.api.domain.exception.EntidadeNaoEncontradaException;
 import br.dev.s2w.jfoods.api.domain.model.Restaurante;
 import br.dev.s2w.jfoods.api.domain.repository.RestauranteRepository;
 import br.dev.s2w.jfoods.api.domain.service.CadastroRestauranteService;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -43,6 +44,24 @@ public class RestauranteController {
             restaurante = cadastroRestaurante.salvar(restaurante);
 
             return ResponseEntity.status(HttpStatus.CREATED).body(restaurante);
+        } catch (EntidadeNaoEncontradaException e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
+    }
+
+    @PutMapping("/{restauranteId}")
+    public ResponseEntity<?> atualizar(@PathVariable Long restauranteId, @RequestBody Restaurante restaurante) {
+        try {
+            Restaurante restauranteAtual = restauranteRepository.buscar(restauranteId);
+
+            if (restauranteAtual != null) {
+                BeanUtils.copyProperties(restaurante, restauranteAtual, "id");
+
+                cadastroRestaurante.salvar(restauranteAtual);
+                return ResponseEntity.ok(restauranteAtual);
+            }
+
+            return ResponseEntity.notFound().build();
         } catch (EntidadeNaoEncontradaException e) {
             return ResponseEntity.badRequest().body(e.getMessage());
         }
