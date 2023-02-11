@@ -1,17 +1,9 @@
 package br.dev.s2w.jfoods.api.domain.repository;
 
 import br.dev.s2w.jfoods.api.domain.model.Cidade;
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.stereotype.Repository;
 
-import java.util.List;
-
-public interface CidadeRepository {
-
-    List<Cidade> listar();
-
-    Cidade buscar(Long cidadeId);
-
-    Cidade salvar(Cidade cidade);
-
-    void remover(Long cidadeId);
-
+@Repository
+public interface CidadeRepository extends JpaRepository<Cidade, Long> {
 }
