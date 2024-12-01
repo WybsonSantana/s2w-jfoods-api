@@ -1,4 +1,4 @@
-package br.dev.s2w.dependency.injection.model;
+package br.dev.s2w.jfoods.api.di.model;
 
 public class Customer {
 
