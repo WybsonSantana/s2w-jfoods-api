@@ -2,9 +2,7 @@ package br.dev.s2w.jfoods.api.di.service;
 
 import br.dev.s2w.jfoods.api.di.model.Customer;
 import br.dev.s2w.jfoods.api.di.notification.Notifier;
-import org.springframework.stereotype.Component;
 
-@Component
 public class CustomerActivationService {
 
     private Notifier notifier;
@@ -17,7 +15,6 @@ public class CustomerActivationService {
 
     public void activate(Customer customer) {
         customer.activate();
-
         notifier.notify(customer, "Your registration in the system is active!");
     }
 }

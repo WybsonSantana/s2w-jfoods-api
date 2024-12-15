@@ -1,4 +1,4 @@
-package br.dev.s2w.jfoods.api;
+package br.dev.s2w.jfoods.api.controller;
 
 import br.dev.s2w.jfoods.api.di.model.Customer;
 import br.dev.s2w.jfoods.api.di.service.CustomerActivationService;
