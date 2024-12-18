@@ -4,6 +4,7 @@ import br.dev.s2w.jfoods.api.di.model.Customer;
 import org.springframework.stereotype.Component;
 
 @Component
+//@Primary
 public class EmailNotifier implements Notifier {
 
     @Override
