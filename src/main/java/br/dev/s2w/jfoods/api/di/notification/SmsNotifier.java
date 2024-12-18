@@ -1,11 +1,11 @@
 package br.dev.s2w.jfoods.api.di.notification;
 
 import br.dev.s2w.jfoods.api.di.model.Customer;
-import org.springframework.context.annotation.Primary;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
 
 @Component
-@Primary
+@Qualifier("urgent")
 public class SmsNotifier implements Notifier {
 
     @Override
