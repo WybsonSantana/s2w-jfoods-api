@@ -1,11 +1,10 @@
 package br.dev.s2w.jfoods.api.di.notification;
 
 import br.dev.s2w.jfoods.api.di.model.Customer;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
 
 @Component
-@Qualifier("normal")
+@NotifierType(UrgencyLevel.NO_URGENCY)
 public class EmailNotifier implements Notifier {
 
     @Override
