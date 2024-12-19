@@ -6,11 +6,11 @@ import org.springframework.stereotype.Component;
 
 @Component
 @NotifierType(UrgencyLevel.NO_URGENCY)
-@Profile("prod")
-public class EmailNotifier implements Notifier {
+@Profile("dev")
+public class EmailMockNotifier implements Notifier {
 
-    public EmailNotifier() {
-        System.out.println("Real EmailNotifier ");
+    public EmailMockNotifier() {
+        System.out.println("Mock EmailNotifier");
     }
 
     @Override

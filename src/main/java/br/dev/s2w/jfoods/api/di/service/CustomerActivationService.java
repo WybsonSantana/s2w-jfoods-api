@@ -11,7 +11,7 @@ import org.springframework.stereotype.Component;
 public class CustomerActivationService {
 
     @Autowired
-    @NotifierType(UrgencyLevel.URGENT)
+    @NotifierType(UrgencyLevel.NO_URGENCY)
     private Notifier notifier;
 
     public void activate(Customer customer) {
