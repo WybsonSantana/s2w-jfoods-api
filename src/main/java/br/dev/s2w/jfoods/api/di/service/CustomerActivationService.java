@@ -5,14 +5,27 @@ import br.dev.s2w.jfoods.api.di.notification.Notifier;
 import br.dev.s2w.jfoods.api.di.notification.NotifierType;
 import br.dev.s2w.jfoods.api.di.notification.UrgencyLevel;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
 
-@Component
+import javax.annotation.PostConstruct;
+import javax.annotation.PreDestroy;
+
+//@Component
 public class CustomerActivationService {
 
     @Autowired
     @NotifierType(UrgencyLevel.NO_URGENCY)
     private Notifier notifier;
+
+    @PostConstruct
+    public void init() {
+        System.out.println("CustomerActivationService instance created!");
+        System.out.printf("INIT %s%n", notifier);
+    }
+
+    @PreDestroy
+    public void destroy() {
+        System.out.println("DESTROY");
+    }
 
     public void activate(Customer customer) {
         customer.activate();
