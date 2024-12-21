@@ -1,17 +1,16 @@
 package br.dev.s2w.jfoods.api.domain.model;
 
-import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.Table;
 
 @Entity
-@Table(name = "tab_cuisines")
 public class Cuisine {
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "cuisine_name")
     private String name;
 
     public Long getId() {
