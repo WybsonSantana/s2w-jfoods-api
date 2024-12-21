@@ -2,6 +2,7 @@ package br.dev.s2w.jfoods.api.jpa;
 
 import br.dev.s2w.jfoods.api.S2wJfoodsApiApplication;
 import br.dev.s2w.jfoods.api.domain.model.Cuisine;
+import br.dev.s2w.jfoods.api.domain.repository.CuisineRepository;
 import org.springframework.boot.WebApplicationType;
 import org.springframework.boot.builder.SpringApplicationBuilder;
 import org.springframework.context.ApplicationContext;
@@ -12,12 +13,12 @@ public class CuisineUpdateMain {
                 .web(WebApplicationType.NONE)
                 .run(args);
 
-        CuisineRegistration cuisineRegistration = applicationContext.getBean(CuisineRegistration.class);
+        CuisineRepository cuisineRepository = applicationContext.getBean(CuisineRepository.class);
 
         Cuisine cuisine = new Cuisine();
         cuisine.setId(1L);
         cuisine.setName("Brasileira");
 
-        cuisineRegistration.save(cuisine);
+        cuisineRepository.save(cuisine);
     }
 }

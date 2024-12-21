@@ -2,6 +2,7 @@ package br.dev.s2w.jfoods.api.jpa;
 
 import br.dev.s2w.jfoods.api.S2wJfoodsApiApplication;
 import br.dev.s2w.jfoods.api.domain.model.Cuisine;
+import br.dev.s2w.jfoods.api.domain.repository.CuisineRepository;
 import org.springframework.boot.WebApplicationType;
 import org.springframework.boot.builder.SpringApplicationBuilder;
 import org.springframework.context.ApplicationContext;
@@ -14,9 +15,9 @@ public class CuisineRetrievalMain {
                 .web(WebApplicationType.NONE)
                 .run(args);
 
-        CuisineRegistration cuisineRegistration = applicationContext.getBean(CuisineRegistration.class);
+        CuisineRepository cuisineRepository = applicationContext.getBean(CuisineRepository.class);
 
-        List<Cuisine> cuisines = cuisineRegistration.list();
+        List<Cuisine> cuisines = cuisineRepository.list();
 
         for (Cuisine cuisine : cuisines) {
             System.out.println(cuisine.getName());

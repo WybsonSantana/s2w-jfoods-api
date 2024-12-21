@@ -2,6 +2,7 @@ package br.dev.s2w.jfoods.api.jpa;
 
 import br.dev.s2w.jfoods.api.S2wJfoodsApiApplication;
 import br.dev.s2w.jfoods.api.domain.model.Cuisine;
+import br.dev.s2w.jfoods.api.domain.repository.CuisineRepository;
 import org.springframework.boot.WebApplicationType;
 import org.springframework.boot.builder.SpringApplicationBuilder;
 import org.springframework.context.ApplicationContext;
@@ -12,7 +13,7 @@ public class CuisineInsertionMain {
                 .web(WebApplicationType.NONE)
                 .run(args);
 
-        CuisineRegistration cuisineRegistration = applicationContext.getBean(CuisineRegistration.class);
+        CuisineRepository cuisineRepository = applicationContext.getBean(CuisineRepository.class);
 
         Cuisine cuisine1 = new Cuisine();
         cuisine1.setName("Brasileira");
@@ -20,8 +21,8 @@ public class CuisineInsertionMain {
         Cuisine cuisine2 = new Cuisine();
         cuisine2.setName("Japonesa");
 
-        cuisine1 = cuisineRegistration.save(cuisine1);
-        cuisine2 = cuisineRegistration.save(cuisine2);
+        cuisine1 = cuisineRepository.save(cuisine1);
+        cuisine2 = cuisineRepository.save(cuisine2);
 
         System.out.printf("%s - %s%n", cuisine1.getId(), cuisine1.getName());
         System.out.printf("%s - %s%n", cuisine2.getId(), cuisine2.getName());
