@@ -19,4 +19,7 @@ public class Restaurant {
 
     @Column(name = "delivery_fee")
     private BigDecimal deliveryFee;
+
+    @ManyToOne
+    private Cuisine cuisine;
 }
