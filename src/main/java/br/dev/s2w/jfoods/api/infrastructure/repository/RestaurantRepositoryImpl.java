@@ -37,6 +37,5 @@ public class RestaurantRepositoryImpl implements RestaurantRepository {
     public void remove(Restaurant restaurant) {
         restaurant = search(restaurant.getId());
         manager.remove(restaurant);
-
     }
 }

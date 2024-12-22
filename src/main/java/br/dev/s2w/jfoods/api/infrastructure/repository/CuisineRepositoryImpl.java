@@ -37,6 +37,5 @@ public class CuisineRepositoryImpl implements CuisineRepository {
     public void remove(Cuisine cuisine) {
         cuisine = search(cuisine.getId());
         manager.remove(cuisine);
-
     }
 }
