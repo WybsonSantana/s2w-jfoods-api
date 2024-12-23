@@ -3,6 +3,7 @@ package br.dev.s2w.jfoods.api.adapter.controller;
 import br.dev.s2w.jfoods.api.adapter.model.CuisinesXmlWrapper;
 import br.dev.s2w.jfoods.api.domain.model.Cuisine;
 import br.dev.s2w.jfoods.api.domain.repository.CuisineRepository;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -44,5 +45,21 @@ public class CuisineController {
     @ResponseStatus(HttpStatus.CREATED)
     public Cuisine add(@RequestBody Cuisine cuisine) {
         return cuisineRepository.save(cuisine);
+    }
+
+    @PutMapping("/{cuisineId}")
+    public ResponseEntity<Cuisine> update(@PathVariable Long cuisineId, @RequestBody Cuisine cuisine) {
+        Cuisine currentCuisine = cuisineRepository.search(cuisineId);
+
+        if (currentCuisine != null) {
+            //currentCuisine.setName(cuisine.getName());
+
+            BeanUtils.copyProperties(cuisine, currentCuisine, "id");
+
+            currentCuisine = cuisineRepository.save(currentCuisine);
+            return ResponseEntity.ok(currentCuisine);
+        }
+
+        return ResponseEntity.notFound().build();
     }
 }
