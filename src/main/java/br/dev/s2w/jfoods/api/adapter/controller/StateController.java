@@ -1,4 +1,4 @@
-package br.dev.s2w.jfoods.api.controller;
+package br.dev.s2w.jfoods.api.adapter.controller;
 
 import br.dev.s2w.jfoods.api.domain.model.State;
 import br.dev.s2w.jfoods.api.domain.repository.StateRepository;
