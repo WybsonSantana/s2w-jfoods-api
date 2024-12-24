@@ -4,6 +4,7 @@ import br.dev.s2w.jfoods.api.domain.exception.EntityNotFoundException;
 import br.dev.s2w.jfoods.api.domain.model.Restaurant;
 import br.dev.s2w.jfoods.api.domain.repository.RestaurantRepository;
 import br.dev.s2w.jfoods.api.domain.service.RestaurantRegisterService;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -47,4 +48,24 @@ public class RestaurantController {
             return ResponseEntity.badRequest().body(e.getMessage());
         }
     }
+
+    @PutMapping("/{restaurantId}")
+    public ResponseEntity<?> update(@PathVariable Long restaurantId, @RequestBody Restaurant restaurant) {
+        try {
+            Restaurant currentRestaurant = restaurantRepository.search(restaurantId);
+
+            if (currentRestaurant != null) {
+                BeanUtils.copyProperties(restaurant, currentRestaurant, "id");
+
+                currentRestaurant = restaurantRegister.save(currentRestaurant);
+
+                return ResponseEntity.ok(currentRestaurant);
+            }
+
+            return ResponseEntity.notFound().build();
+        } catch (EntityNotFoundException e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
+    }
 }
+
