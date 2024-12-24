@@ -2,6 +2,7 @@ package br.dev.s2w.jfoods.api.infrastructure.repository;
 
 import br.dev.s2w.jfoods.api.domain.model.Cuisine;
 import br.dev.s2w.jfoods.api.domain.repository.CuisineRepository;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -34,8 +35,13 @@ public class CuisineRepositoryImpl implements CuisineRepository {
 
     @Transactional
     @Override
-    public void remove(Cuisine cuisine) {
-        cuisine = search(cuisine.getId());
+    public void remove(Long cuisineId) {
+        Cuisine cuisine = search(cuisineId);
+
+        if (cuisine == null) {
+            throw new EmptyResultDataAccessException(1);
+        }
+
         manager.remove(cuisine);
     }
 }

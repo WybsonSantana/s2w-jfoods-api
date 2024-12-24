@@ -11,5 +11,5 @@ public interface CuisineRepository {
 
     Cuisine save(Cuisine cuisine);
 
-    void remove(Cuisine cuisine);
+    void remove(Long cuisineId);
 }

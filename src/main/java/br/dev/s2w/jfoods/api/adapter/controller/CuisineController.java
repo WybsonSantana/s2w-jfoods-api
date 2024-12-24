@@ -1,14 +1,13 @@
 package br.dev.s2w.jfoods.api.adapter.controller;
 
-import br.dev.s2w.jfoods.api.adapter.model.CuisinesXmlWrapper;
+import br.dev.s2w.jfoods.api.domain.exception.EntityInUseException;
+import br.dev.s2w.jfoods.api.domain.exception.EntityNotFoundException;
 import br.dev.s2w.jfoods.api.domain.model.Cuisine;
 import br.dev.s2w.jfoods.api.domain.repository.CuisineRepository;
 import br.dev.s2w.jfoods.api.domain.service.CuisineRegisterService;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -25,13 +24,8 @@ public class CuisineController {
     private CuisineRegisterService cuisineRegister;
 
     @GetMapping
-    public List<Cuisine> listJson() {
+    public List<Cuisine> list() {
         return cuisineRepository.list();
-    }
-
-    @GetMapping(produces = MediaType.APPLICATION_XML_VALUE)
-    public CuisinesXmlWrapper listXml() {
-        return new CuisinesXmlWrapper((cuisineRepository.list()));
     }
 
     @GetMapping("/{cuisineId}")
@@ -57,11 +51,9 @@ public class CuisineController {
         Cuisine currentCuisine = cuisineRepository.search(cuisineId);
 
         if (currentCuisine != null) {
-            //currentCuisine.setName(cuisine.getName());
-
             BeanUtils.copyProperties(cuisine, currentCuisine, "id");
 
-            currentCuisine = cuisineRepository.save(currentCuisine);
+            currentCuisine = cuisineRegister.save(currentCuisine);
             return ResponseEntity.ok(currentCuisine);
         }
 
@@ -71,15 +63,11 @@ public class CuisineController {
     @DeleteMapping("/{cuisineId}")
     public ResponseEntity<Cuisine> remove(@PathVariable Long cuisineId) {
         try {
-            Cuisine cuisine = cuisineRepository.search(cuisineId);
-
-            if (cuisine != null) {
-                cuisineRepository.remove(cuisine);
-                return ResponseEntity.noContent().build();
-            }
-
+            cuisineRegister.remove(cuisineId);
+            return ResponseEntity.noContent().build();
+        } catch (EntityNotFoundException e) {
             return ResponseEntity.notFound().build();
-        } catch (DataIntegrityViolationException e) {
+        } catch (EntityInUseException e) {
             return ResponseEntity.status(HttpStatus.CONFLICT).build();
         }
     }
