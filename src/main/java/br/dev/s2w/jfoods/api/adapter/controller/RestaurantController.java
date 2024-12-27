@@ -4,14 +4,18 @@ import br.dev.s2w.jfoods.api.domain.exception.EntityNotFoundException;
 import br.dev.s2w.jfoods.api.domain.model.Restaurant;
 import br.dev.s2w.jfoods.api.domain.repository.RestaurantRepository;
 import br.dev.s2w.jfoods.api.domain.service.RestaurantRegisterService;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.util.ReflectionUtils;
 import org.springframework.web.bind.annotation.*;
 
+import java.lang.reflect.Field;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 @RestController
 @RequestMapping("/restaurants")
@@ -83,8 +87,16 @@ public class RestaurantController {
     }
 
     private void merge(Map<String, Object> fields, Restaurant targetRestaurant) {
+        ObjectMapper mapper = new ObjectMapper();
+        Restaurant currentRestaurant = mapper.convertValue(fields, Restaurant.class);
+
         fields.forEach((key, value) -> {
-            System.out.printf("%s = %s%n", key, value);
+            Field field = ReflectionUtils.findField(Restaurant.class, key);
+            Objects.requireNonNull(field).setAccessible(true);
+
+            Object newValue = ReflectionUtils.getField(field, currentRestaurant);
+
+            ReflectionUtils.setField(field, targetRestaurant, newValue);
         });
     }
 
