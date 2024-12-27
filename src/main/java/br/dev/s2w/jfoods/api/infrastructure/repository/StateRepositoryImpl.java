@@ -2,6 +2,7 @@ package br.dev.s2w.jfoods.api.infrastructure.repository;
 
 import br.dev.s2w.jfoods.api.domain.model.State;
 import br.dev.s2w.jfoods.api.domain.repository.StateRepository;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -34,8 +35,14 @@ public class StateRepositoryImpl implements StateRepository {
 
     @Transactional
     @Override
-    public void remove(State state) {
-        state = search(state.getId());
+    public void remove(Long stateId) {
+        State state = search(stateId);
+
+        if (state == null) {
+            throw new EmptyResultDataAccessException(1);
+        }
+
         manager.remove(state);
     }
+
 }

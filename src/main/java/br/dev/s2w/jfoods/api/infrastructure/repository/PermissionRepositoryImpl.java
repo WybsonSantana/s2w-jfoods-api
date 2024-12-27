@@ -38,4 +38,5 @@ public class PermissionRepositoryImpl implements PermissionRepository {
         permission = search(permission.getId());
         manager.remove(permission);
     }
+
 }

@@ -38,4 +38,5 @@ public class PaymentMethodRepositoryImpl implements PaymentMethodRepository {
         paymentMethod = search(paymentMethod.getId());
         manager.remove(paymentMethod);
     }
+
 }

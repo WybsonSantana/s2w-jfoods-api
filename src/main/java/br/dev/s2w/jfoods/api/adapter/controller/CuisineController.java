@@ -61,14 +61,15 @@ public class CuisineController {
     }
 
     @DeleteMapping("/{cuisineId}")
-    public ResponseEntity<Cuisine> remove(@PathVariable Long cuisineId) {
+    public ResponseEntity<?> remove(@PathVariable Long cuisineId) {
         try {
             cuisineRegister.remove(cuisineId);
             return ResponseEntity.noContent().build();
         } catch (EntityNotFoundException e) {
             return ResponseEntity.notFound().build();
         } catch (EntityInUseException e) {
-            return ResponseEntity.status(HttpStatus.CONFLICT).build();
+            return ResponseEntity.status(HttpStatus.CONFLICT).body(e.getMessage());
         }
     }
+
 }

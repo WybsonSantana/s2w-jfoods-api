@@ -67,5 +67,5 @@ public class RestaurantController {
             return ResponseEntity.badRequest().body(e.getMessage());
         }
     }
-}
 
+}

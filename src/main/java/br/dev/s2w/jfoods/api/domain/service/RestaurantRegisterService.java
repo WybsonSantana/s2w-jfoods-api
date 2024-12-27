@@ -29,4 +29,5 @@ public class RestaurantRegisterService {
 
         return restaurantRepository.save(restaurant);
     }
+
 }

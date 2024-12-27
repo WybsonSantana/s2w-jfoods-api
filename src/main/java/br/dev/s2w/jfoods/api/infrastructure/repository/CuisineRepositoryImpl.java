@@ -44,4 +44,5 @@ public class CuisineRepositoryImpl implements CuisineRepository {
 
         manager.remove(cuisine);
     }
+
 }

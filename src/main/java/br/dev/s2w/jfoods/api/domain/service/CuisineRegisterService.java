@@ -28,4 +28,5 @@ public class CuisineRegisterService {
             throw new EntityInUseException(String.format("The cuisine with code %d cannot be removed because it is in use", cuisineId));
         }
     }
+
 }

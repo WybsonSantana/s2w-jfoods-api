@@ -38,4 +38,5 @@ public class RestaurantRepositoryImpl implements RestaurantRepository {
         restaurant = search(restaurant.getId());
         manager.remove(restaurant);
     }
+
 }
