@@ -2,6 +2,8 @@ package br.dev.s2w.jfoods.api.domain.repository;
 
 import br.dev.s2w.jfoods.api.domain.model.Restaurant;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.math.BigDecimal;
@@ -12,7 +14,10 @@ import java.util.Optional;
 public interface RestaurantRepository extends JpaRepository<Restaurant, Long> {
     List<Restaurant> findByDeliveryFeeBetween(BigDecimal initialFee, BigDecimal finalFee);
 
-    List<Restaurant> findByNameContainingAndCuisineId(String name, Long cuisineId);
+    @Query("from Restaurant where name like %:name% and cuisine.id = :cuisineId")
+    List<Restaurant> queryByName(String name, @Param("cuisineId") Long cuisineId);
+
+    //List<Restaurant> findByNameContainingAndCuisineId(String name, Long cuisineId);
 
     Optional<Restaurant> getFirstRestaurantByNameContaining(String name);
 
