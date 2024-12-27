@@ -1,15 +1,9 @@
 package br.dev.s2w.jfoods.api.domain.repository;
 
 import br.dev.s2w.jfoods.api.domain.model.PaymentMethod;
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.stereotype.Repository;
 
-import java.util.List;
-
-public interface PaymentMethodRepository {
-    List<PaymentMethod> list();
-
-    PaymentMethod search(Long id);
-
-    PaymentMethod save(PaymentMethod paymentMethod);
-
-    void remove(PaymentMethod paymentMethod);
+@Repository
+public interface PaymentMethodRepository extends JpaRepository<PaymentMethod, Long> {
 }

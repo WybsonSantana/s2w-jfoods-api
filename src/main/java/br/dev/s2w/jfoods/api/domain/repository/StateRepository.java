@@ -1,15 +1,9 @@
 package br.dev.s2w.jfoods.api.domain.repository;
 
 import br.dev.s2w.jfoods.api.domain.model.State;
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.stereotype.Repository;
 
-import java.util.List;
-
-public interface StateRepository {
-    List<State> list();
-
-    State search(Long id);
-
-    State save(State state);
-
-    void remove(Long stateId);
+@Repository
+public interface StateRepository extends JpaRepository<State, Long> {
 }

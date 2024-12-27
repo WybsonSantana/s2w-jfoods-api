@@ -21,7 +21,7 @@ public class StateRegisterService {
 
     public void remove(Long stateId) {
         try {
-            stateRepository.remove(stateId);
+            stateRepository.deleteById(stateId);
         } catch (EmptyResultDataAccessException e) {
             throw new EntityNotFoundException(String.format("There is no state registration with the code %d", stateId));
         } catch (DataIntegrityViolationException e) {
