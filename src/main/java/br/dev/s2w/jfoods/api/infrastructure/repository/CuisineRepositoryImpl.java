@@ -23,6 +23,13 @@ public class CuisineRepositoryImpl implements CuisineRepository {
     }
 
     @Override
+    public List<Cuisine> findByName(String name) {
+        return manager.createQuery("from Cuisine where name like :name", Cuisine.class)
+                .setParameter("name", "%" + name + "%")
+                .getResultList();
+    }
+
+    @Override
     public Cuisine search(Long id) {
         return manager.find(Cuisine.class, id);
     }
