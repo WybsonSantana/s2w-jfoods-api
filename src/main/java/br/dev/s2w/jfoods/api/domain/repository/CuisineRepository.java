@@ -1,17 +1,10 @@
 package br.dev.s2w.jfoods.api.domain.repository;
 
 import br.dev.s2w.jfoods.api.domain.model.Cuisine;
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.stereotype.Repository;
 
-import java.util.List;
-
-public interface CuisineRepository {
-    List<Cuisine> list();
-
-    List<Cuisine> findByName(String name);
-
-    Cuisine search(Long id);
-
-    Cuisine save(Cuisine cuisine);
-
-    void remove(Long cuisineId);
+@Repository
+public interface CuisineRepository extends JpaRepository<Cuisine, Long> {
+    //List<Cuisine> findByName(String name);
 }

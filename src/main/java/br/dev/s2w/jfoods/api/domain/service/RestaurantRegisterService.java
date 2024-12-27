@@ -8,6 +8,8 @@ import br.dev.s2w.jfoods.api.domain.repository.RestaurantRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.Optional;
+
 @Service
 public class RestaurantRegisterService {
 
@@ -19,13 +21,13 @@ public class RestaurantRegisterService {
 
     public Restaurant save(Restaurant restaurant) {
         Long cuisineId = restaurant.getCuisine().getId();
-        Cuisine currentCuisine = cuisineRepository.search(cuisineId);
+        Optional<Cuisine> currentCuisine = cuisineRepository.findById(cuisineId);
 
-        if (currentCuisine == null) {
+        if (currentCuisine.isEmpty()) {
             throw new EntityNotFoundException(String.format("There is no cuisine registration with the code %d", cuisineId));
         }
 
-        restaurant.setCuisine(currentCuisine);
+        restaurant.setCuisine(currentCuisine.get());
 
         return restaurantRepository.save(restaurant);
     }
