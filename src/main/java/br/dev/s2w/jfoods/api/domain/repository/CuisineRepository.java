@@ -9,7 +9,7 @@ import java.util.Optional;
 
 @Repository
 public interface CuisineRepository extends JpaRepository<Cuisine, Long> {
-    List<Cuisine> findAllByName(String name);
+    List<Cuisine> findAllByNameContaining(String name);
 
     Optional<Cuisine> findByName(String name);
 }
