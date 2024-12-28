@@ -59,6 +59,11 @@ public class TestController {
         return restaurantRepository.queryTop2ByNameContaining(name);
     }
 
+    @GetMapping("/restaurants/by-name-and-delivery-fee")
+    public List<Restaurant> restaurantsByNameAndDeliveryFee(@RequestParam String name, @RequestParam BigDecimal initialFee, @RequestParam BigDecimal finalFee) {
+        return restaurantRepository.find(name, initialFee, finalFee);
+    }
+
     @GetMapping("/restaurants/count-by-cuisine")
     public int countRestaurantsByCuisine(@RequestParam Long cuisineId) {
         return restaurantRepository.countByCuisineId(cuisineId);
