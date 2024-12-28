@@ -40,12 +40,14 @@ public class TestController {
     }
 
     @GetMapping("/restaurants/by-delivery-fee")
-    public List<Restaurant> restaurantsByDeliveryFee(@RequestParam BigDecimal initialFee, @RequestParam BigDecimal finalFee) {
+    public List<Restaurant> restaurantsByDeliveryFee(@RequestParam BigDecimal initialFee,
+                                                     @RequestParam BigDecimal finalFee) {
         return restaurantRepository.findByDeliveryFeeBetween(initialFee, finalFee);
     }
 
     @GetMapping("/restaurants/by-name")
-    public List<Restaurant> restaurantsByName(@RequestParam String name, @RequestParam Long cuisineId) {
+    public List<Restaurant> restaurantsByName(@RequestParam String name,
+                                              @RequestParam Long cuisineId) {
         return restaurantRepository.queryByName(name, cuisineId);
     }
 
@@ -60,7 +62,9 @@ public class TestController {
     }
 
     @GetMapping("/restaurants/by-name-and-delivery-fee")
-    public List<Restaurant> restaurantsByNameAndDeliveryFee(@RequestParam String name, @RequestParam BigDecimal initialFee, @RequestParam BigDecimal finalFee) {
+    public List<Restaurant> restaurantsByNameAndDeliveryFee(@RequestParam(required = false) String name,
+                                                            @RequestParam(required = false) BigDecimal initialFee,
+                                                            @RequestParam(required = false) BigDecimal finalFee) {
         return restaurantRepository.find(name, initialFee, finalFee);
     }
 
