@@ -1,7 +1,10 @@
 package br.dev.s2w.jfoods.api.infrastructure.repository;
 
 import br.dev.s2w.jfoods.api.domain.model.Restaurant;
+import br.dev.s2w.jfoods.api.domain.repository.RestaurantRepository;
 import br.dev.s2w.jfoods.api.domain.repository.RestaurantRepositoryQueries;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Repository;
 import org.springframework.util.StringUtils;
 
@@ -16,11 +19,18 @@ import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
+import static br.dev.s2w.jfoods.api.infrastructure.repository.specification.RestaurantSpecs.withFreeDelivery;
+import static br.dev.s2w.jfoods.api.infrastructure.repository.specification.RestaurantSpecs.withSimilarName;
+
 @Repository
 public class RestaurantRepositoryImpl implements RestaurantRepositoryQueries {
 
     @PersistenceContext
     private EntityManager manager;
+
+    @Autowired
+    @Lazy
+    private RestaurantRepository restaurantRepository;
 
     @Override
     public List<Restaurant> find(String name, BigDecimal initialFee, BigDecimal finalFee) {
@@ -47,6 +57,11 @@ public class RestaurantRepositoryImpl implements RestaurantRepositoryQueries {
         TypedQuery<Restaurant> query = manager.createQuery(criteria);
 
         return query.getResultList();
+    }
+
+    @Override
+    public List<Restaurant> findWithFreeDelivery(String name) {
+        return restaurantRepository.findAll(withFreeDelivery().and(withSimilarName(name)));
     }
 
 }

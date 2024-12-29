@@ -14,9 +14,6 @@ import java.math.BigDecimal;
 import java.util.List;
 import java.util.Optional;
 
-import static br.dev.s2w.jfoods.api.infrastructure.repository.specification.RestaurantSpecs.withFreeDelivery;
-import static br.dev.s2w.jfoods.api.infrastructure.repository.specification.RestaurantSpecs.withSimilarName;
-
 @RestController
 @RequestMapping("/test")
 public class TestController {
@@ -78,6 +75,6 @@ public class TestController {
 
     @GetMapping("/restaurants/with-free-delivery")
     public List<Restaurant> restaurantsWithFreeDelivery(@RequestParam(required = false) String name) {
-        return restaurantRepository.findAll(withFreeDelivery().and(withSimilarName(name)));
+        return restaurantRepository.findWithFreeDelivery(name);
     }
 }
