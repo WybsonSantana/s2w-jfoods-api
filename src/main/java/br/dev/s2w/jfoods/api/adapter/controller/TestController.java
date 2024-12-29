@@ -4,6 +4,8 @@ import br.dev.s2w.jfoods.api.domain.model.Cuisine;
 import br.dev.s2w.jfoods.api.domain.model.Restaurant;
 import br.dev.s2w.jfoods.api.domain.repository.CuisineRepository;
 import br.dev.s2w.jfoods.api.domain.repository.RestaurantRepository;
+import br.dev.s2w.jfoods.api.infrastructure.repository.specification.RestaurantWithFreeDeliverySpec;
+import br.dev.s2w.jfoods.api.infrastructure.repository.specification.RestaurantWithSimilarNameSpec;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -73,4 +75,11 @@ public class TestController {
         return restaurantRepository.countByCuisineId(cuisineId);
     }
 
+    @GetMapping("/restaurants/with-free-delivery")
+    public List<Restaurant> restaurantsWithFreeDelivery(@RequestParam(required = false) String name) {
+        var withFreeDelivery = new RestaurantWithFreeDeliverySpec();
+        var withSimilarName = new RestaurantWithSimilarNameSpec(name);
+
+        return restaurantRepository.findAll(withFreeDelivery.and(withSimilarName));
+    }
 }
