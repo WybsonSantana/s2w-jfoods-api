@@ -1,9 +1,12 @@
 package br.dev.s2w.jfoods.api.domain.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
 import javax.persistence.*;
+import java.util.ArrayList;
+import java.util.List;
 
 @Data
 @EqualsAndHashCode(onlyExplicitlyIncluded = true)
@@ -16,4 +19,8 @@ public class Cuisine {
 
     @Column(nullable = false)
     private String name;
+
+    @JsonIgnore
+    @OneToMany
+    private List<Restaurant> restaurants = new ArrayList<>();
 }
