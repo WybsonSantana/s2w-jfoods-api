@@ -27,3 +27,5 @@ insert into payment_method(id, description) values(4, 'Pix');
 
 insert into permission(id, name, description) values(1, 'GET_CUISINES', 'Allows you to retrieve cuisines');
 insert into permission(id, name, description) values(2, 'PUT_CUISINES', 'Allows you to update cuisines');
+
+insert into restaurant_payment_method(restaurant_id, payment_method_id) values(1, 1), (1, 2), (1, 3), (1, 4), (2, 3), (2, 4), (3, 2), (3, 3), (3, 4);
