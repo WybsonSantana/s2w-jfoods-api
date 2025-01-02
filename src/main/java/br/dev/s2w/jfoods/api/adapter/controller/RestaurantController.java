@@ -62,7 +62,7 @@ public class RestaurantController {
 
             if (currentRestaurant.isPresent()) {
                 BeanUtils.copyProperties(restaurant, currentRestaurant.get(),
-                        "id", "paymentMethods", "address");
+                        "id", "paymentMethods", "address", "registrationDate");
 
                 Restaurant savedRestaurant = restaurantRegister.save(currentRestaurant.get());
 
