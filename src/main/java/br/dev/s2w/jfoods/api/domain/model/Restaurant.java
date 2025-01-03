@@ -1,6 +1,7 @@
 package br.dev.s2w.jfoods.api.domain.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import org.hibernate.annotations.CreationTimestamp;
@@ -27,7 +28,8 @@ public class Restaurant {
     @Column(name = "delivery_fee", nullable = false)
     private BigDecimal deliveryFee;
 
-    @ManyToOne
+    @JsonIgnoreProperties("hibernateLazyInitializer")
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "cuisine_id", nullable = false)
     private Cuisine cuisine;
 
