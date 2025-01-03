@@ -47,8 +47,8 @@ public class Restaurant {
     @Column(nullable = false, columnDefinition = "datetime")
     private LocalDateTime lastUpdateDate;
 
-    @JsonIgnore
-    @ManyToMany(fetch = FetchType.EAGER)
+    //@JsonIgnore
+    @ManyToMany
     @JoinTable(name = "restaurant_payment_method",
             joinColumns = @JoinColumn(name = "restaurant_id"),
             inverseJoinColumns = @JoinColumn(name = "payment_method_id"))
