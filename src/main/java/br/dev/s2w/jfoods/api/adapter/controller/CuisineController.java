@@ -1,7 +1,5 @@
 package br.dev.s2w.jfoods.api.adapter.controller;
 
-import br.dev.s2w.jfoods.api.domain.exception.EntityInUseException;
-import br.dev.s2w.jfoods.api.domain.exception.EntityNotFoundException;
 import br.dev.s2w.jfoods.api.domain.model.Cuisine;
 import br.dev.s2w.jfoods.api.domain.repository.CuisineRepository;
 import br.dev.s2w.jfoods.api.domain.service.CuisineRegisterService;
@@ -60,16 +58,22 @@ public class CuisineController {
         return ResponseEntity.notFound().build();
     }
 
+//    @DeleteMapping("/{cuisineId}")
+//    public ResponseEntity<?> remove(@PathVariable Long cuisineId) {
+//        try {
+//            cuisineRegister.remove(cuisineId);
+//            return ResponseEntity.noContent().build();
+//        } catch (EntityNotFoundException e) {
+//            return ResponseEntity.notFound().build();
+//        } catch (EntityInUseException e) {
+//            return ResponseEntity.status(HttpStatus.CONFLICT).body(e.getMessage());
+//        }
+//    }
+
     @DeleteMapping("/{cuisineId}")
-    public ResponseEntity<?> remove(@PathVariable Long cuisineId) {
-        try {
-            cuisineRegister.remove(cuisineId);
-            return ResponseEntity.noContent().build();
-        } catch (EntityNotFoundException e) {
-            return ResponseEntity.notFound().build();
-        } catch (EntityInUseException e) {
-            return ResponseEntity.status(HttpStatus.CONFLICT).body(e.getMessage());
-        }
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void remove(@PathVariable Long cuisineId) {
+        cuisineRegister.remove(cuisineId);
     }
 
 }
