@@ -6,11 +6,9 @@ import br.dev.s2w.jfoods.api.domain.service.CuisineRegisterService;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.Optional;
 
 @RestController
 @RequestMapping(value = "/cuisines")
@@ -28,14 +26,8 @@ public class CuisineController {
     }
 
     @GetMapping("/{cuisineId}")
-    public ResponseEntity<Cuisine> search(@PathVariable Long cuisineId) {
-        Optional<Cuisine> cuisine = cuisineRepository.findById(cuisineId);
-
-        if (cuisine.isPresent()) {
-            return ResponseEntity.ok(cuisine.get());
-        }
-
-        return ResponseEntity.notFound().build();
+    public Cuisine search(@PathVariable Long cuisineId) {
+        return cuisineRegister.find(cuisineId);
     }
 
     @PostMapping
@@ -45,30 +37,13 @@ public class CuisineController {
     }
 
     @PutMapping("/{cuisineId}")
-    public ResponseEntity<Cuisine> update(@PathVariable Long cuisineId, @RequestBody Cuisine cuisine) {
-        Optional<Cuisine> currentCuisine = cuisineRepository.findById(cuisineId);
+    public Cuisine update(@PathVariable Long cuisineId, @RequestBody Cuisine cuisine) {
+        Cuisine currentCuisine = cuisineRegister.find(cuisineId);
 
-        if (currentCuisine.isPresent()) {
-            BeanUtils.copyProperties(cuisine, currentCuisine.get(), "id");
+        BeanUtils.copyProperties(cuisine, currentCuisine, "id");
 
-            Cuisine savedCuisine = cuisineRegister.save(currentCuisine.get());
-            return ResponseEntity.ok(savedCuisine);
-        }
-
-        return ResponseEntity.notFound().build();
+        return cuisineRegister.save(currentCuisine);
     }
-
-//    @DeleteMapping("/{cuisineId}")
-//    public ResponseEntity<?> remove(@PathVariable Long cuisineId) {
-//        try {
-//            cuisineRegister.remove(cuisineId);
-//            return ResponseEntity.noContent().build();
-//        } catch (EntityNotFoundException e) {
-//            return ResponseEntity.notFound().build();
-//        } catch (EntityInUseException e) {
-//            return ResponseEntity.status(HttpStatus.CONFLICT).body(e.getMessage());
-//        }
-//    }
 
     @DeleteMapping("/{cuisineId}")
     @ResponseStatus(HttpStatus.NO_CONTENT)

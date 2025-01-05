@@ -12,8 +12,16 @@ import org.springframework.stereotype.Service;
 @Service
 public class CuisineRegisterService {
 
+    private static final String CUISINE_NOT_FOUND_MESSAGE = "There is no cuisine registration with the code %d";
+    private static final String CUISINE_IN_USE_MESSAGE = "The cuisine with code %d cannot be removed because it is in use";
+
     @Autowired
     private CuisineRepository cuisineRepository;
+
+    public Cuisine find(Long cuisineId) {
+        return cuisineRepository.findById(cuisineId)
+                .orElseThrow(() -> new EntityNotFoundException(String.format(CUISINE_NOT_FOUND_MESSAGE, cuisineId)));
+    }
 
     public Cuisine save(Cuisine cuisine) {
         return cuisineRepository.save(cuisine);
@@ -23,9 +31,9 @@ public class CuisineRegisterService {
         try {
             cuisineRepository.deleteById(cuisineId);
         } catch (EmptyResultDataAccessException e) {
-            throw new EntityNotFoundException(String.format("There is no cuisine registration with the code %d", cuisineId));
+            throw new EntityNotFoundException(String.format(CUISINE_NOT_FOUND_MESSAGE, cuisineId));
         } catch (DataIntegrityViolationException e) {
-            throw new EntityInUseException(String.format("The cuisine with code %d cannot be removed because it is in use", cuisineId));
+            throw new EntityInUseException(String.format(CUISINE_IN_USE_MESSAGE, cuisineId));
         }
     }
 
