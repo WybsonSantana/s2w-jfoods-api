@@ -1,5 +1,7 @@
 package br.dev.s2w.jfoods.api.adapter.controller;
 
+import br.dev.s2w.jfoods.api.domain.exception.BusinessException;
+import br.dev.s2w.jfoods.api.domain.exception.EntityNotFoundException;
 import br.dev.s2w.jfoods.api.domain.model.Restaurant;
 import br.dev.s2w.jfoods.api.domain.repository.RestaurantRepository;
 import br.dev.s2w.jfoods.api.domain.service.RestaurantRegisterService;
@@ -38,7 +40,11 @@ public class RestaurantController {
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     public Restaurant add(@RequestBody Restaurant restaurant) {
-        return restaurantRegister.save(restaurant);
+        try {
+            return restaurantRegister.save(restaurant);
+        } catch (EntityNotFoundException e) {
+            throw new BusinessException((e.getMessage()));
+        }
     }
 
     @PutMapping("/{restaurantId}")
@@ -48,7 +54,11 @@ public class RestaurantController {
         BeanUtils.copyProperties(restaurant, currentRestaurant,
                 "id", "paymentMethods", "address", "registrationDate", "products");
 
-        return restaurantRegister.save(restaurant);
+        try {
+            return restaurantRegister.save(restaurant);
+        } catch (EntityNotFoundException e) {
+            throw new BusinessException((e.getMessage()));
+        }
     }
 
     @PatchMapping("/{restaurantId}")
