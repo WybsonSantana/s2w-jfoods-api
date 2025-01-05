@@ -1,7 +1,7 @@
 package br.dev.s2w.jfoods.api.adapter.controller;
 
 import br.dev.s2w.jfoods.api.domain.exception.BusinessException;
-import br.dev.s2w.jfoods.api.domain.exception.EntityNotFoundException;
+import br.dev.s2w.jfoods.api.domain.exception.StateNotFoundException;
 import br.dev.s2w.jfoods.api.domain.model.City;
 import br.dev.s2w.jfoods.api.domain.repository.CityRepository;
 import br.dev.s2w.jfoods.api.domain.service.CityRegisterService;
@@ -37,21 +37,21 @@ public class CityController {
     public City add(@RequestBody City city) {
         try {
             return cityRegister.save(city);
-        } catch (EntityNotFoundException e) {
-            throw new BusinessException(e.getMessage());
+        } catch (StateNotFoundException e) {
+            throw new BusinessException(e.getMessage(), e);
         }
     }
 
     @PutMapping("/{cityId}")
     public City update(@PathVariable Long cityId, @RequestBody City city) {
-        City currentCity = cityRegister.find(cityId);
-
-        BeanUtils.copyProperties(city, currentCity, "id");
-
         try {
+            City currentCity = cityRegister.find(cityId);
+
+            BeanUtils.copyProperties(city, currentCity, "id");
+
             return cityRegister.save(currentCity);
-        } catch (EntityNotFoundException e) {
-            throw new BusinessException(e.getMessage());
+        } catch (StateNotFoundException e) {
+            throw new BusinessException(e.getMessage(), e);
         }
     }
 
