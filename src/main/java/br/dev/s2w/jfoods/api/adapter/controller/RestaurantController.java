@@ -1,6 +1,5 @@
 package br.dev.s2w.jfoods.api.adapter.controller;
 
-import br.dev.s2w.jfoods.api.domain.exception.EntityNotFoundException;
 import br.dev.s2w.jfoods.api.domain.model.Restaurant;
 import br.dev.s2w.jfoods.api.domain.repository.RestaurantRepository;
 import br.dev.s2w.jfoods.api.domain.service.RestaurantRegisterService;
@@ -8,7 +7,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.util.ReflectionUtils;
 import org.springframework.web.bind.annotation.*;
 
@@ -16,7 +14,6 @@ import java.lang.reflect.Field;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
-import java.util.Optional;
 
 @RestController
 @RequestMapping("/restaurants")
@@ -34,58 +31,33 @@ public class RestaurantController {
     }
 
     @GetMapping("/{restaurantId}")
-    public ResponseEntity<Restaurant> search(@PathVariable Long restaurantId) {
-        Optional<Restaurant> restaurant = restaurantRepository.findById(restaurantId);
-
-        if (restaurant.isPresent()) {
-            return ResponseEntity.ok(restaurant.get());
-        }
-
-        return ResponseEntity.notFound().build();
+    public Restaurant find(@PathVariable Long restaurantId) {
+        return restaurantRegister.find(restaurantId);
     }
 
     @PostMapping
-    public ResponseEntity<?> add(@RequestBody Restaurant restaurant) {
-        try {
-            restaurant = restaurantRegister.save(restaurant);
-
-            return ResponseEntity.status(HttpStatus.CREATED).body(restaurant);
-        } catch (EntityNotFoundException e) {
-            return ResponseEntity.badRequest().body(e.getMessage());
-        }
+    @ResponseStatus(HttpStatus.CREATED)
+    public Restaurant add(@RequestBody Restaurant restaurant) {
+        return restaurantRegister.save(restaurant);
     }
 
     @PutMapping("/{restaurantId}")
-    public ResponseEntity<?> update(@PathVariable Long restaurantId, @RequestBody Restaurant restaurant) {
-        try {
-            Optional<Restaurant> currentRestaurant = restaurantRepository.findById(restaurantId);
+    public Restaurant update(@PathVariable Long restaurantId, @RequestBody Restaurant restaurant) {
+        Restaurant currentRestaurant = restaurantRegister.find(restaurantId);
 
-            if (currentRestaurant.isPresent()) {
-                BeanUtils.copyProperties(restaurant, currentRestaurant.get(),
-                        "id", "paymentMethods", "address", "registrationDate", "products");
+        BeanUtils.copyProperties(restaurant, currentRestaurant,
+                "id", "paymentMethods", "address", "registrationDate", "products");
 
-                Restaurant savedRestaurant = restaurantRegister.save(currentRestaurant.get());
-
-                return ResponseEntity.ok(savedRestaurant);
-            }
-
-            return ResponseEntity.notFound().build();
-        } catch (EntityNotFoundException e) {
-            return ResponseEntity.badRequest().body(e.getMessage());
-        }
+        return restaurantRegister.save(restaurant);
     }
 
     @PatchMapping("/{restaurantId}")
-    public ResponseEntity<?> patch(@PathVariable Long restaurantId, @RequestBody Map<String, Object> fields) {
-        Optional<Restaurant> currentRestaurant = restaurantRepository.findById(restaurantId);
+    public Restaurant patch(@PathVariable Long restaurantId, @RequestBody Map<String, Object> fields) {
+        Restaurant currentRestaurant = restaurantRegister.find(restaurantId);
 
-        if (currentRestaurant.isEmpty()) {
-            return ResponseEntity.notFound().build();
-        }
+        merge(fields, currentRestaurant);
 
-        merge(fields, currentRestaurant.get());
-
-        return update(restaurantId, currentRestaurant.get());
+        return update(restaurantId, currentRestaurant);
     }
 
     private void merge(Map<String, Object> fields, Restaurant targetRestaurant) {

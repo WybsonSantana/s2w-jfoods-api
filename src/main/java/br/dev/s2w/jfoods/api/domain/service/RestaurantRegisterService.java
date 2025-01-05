@@ -3,31 +3,31 @@ package br.dev.s2w.jfoods.api.domain.service;
 import br.dev.s2w.jfoods.api.domain.exception.EntityNotFoundException;
 import br.dev.s2w.jfoods.api.domain.model.Cuisine;
 import br.dev.s2w.jfoods.api.domain.model.Restaurant;
-import br.dev.s2w.jfoods.api.domain.repository.CuisineRepository;
 import br.dev.s2w.jfoods.api.domain.repository.RestaurantRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.Optional;
-
 @Service
 public class RestaurantRegisterService {
+
+    private static final String RESTAURANT_NOT_FOUND_MESSAGE = "There is no restaurant registration with the code %d";
 
     @Autowired
     private RestaurantRepository restaurantRepository;
 
     @Autowired
-    private CuisineRepository cuisineRepository;
+    private CuisineRegisterService cuisineRegister;
+
+    public Restaurant find(Long restaurantId) {
+        return restaurantRepository.findById(restaurantId)
+                .orElseThrow(() -> new EntityNotFoundException(String.format(RESTAURANT_NOT_FOUND_MESSAGE, restaurantId)));
+    }
 
     public Restaurant save(Restaurant restaurant) {
         Long cuisineId = restaurant.getCuisine().getId();
-        Optional<Cuisine> currentCuisine = cuisineRepository.findById(cuisineId);
+        Cuisine currentCuisine = cuisineRegister.find(cuisineId);
 
-        if (currentCuisine.isEmpty()) {
-            throw new EntityNotFoundException(String.format("There is no cuisine registration with the code %d", cuisineId));
-        }
-
-        restaurant.setCuisine(currentCuisine.get());
+        restaurant.setCuisine(currentCuisine);
 
         return restaurantRepository.save(restaurant);
     }

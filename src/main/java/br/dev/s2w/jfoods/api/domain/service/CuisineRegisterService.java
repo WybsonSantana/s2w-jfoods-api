@@ -13,6 +13,7 @@ import org.springframework.stereotype.Service;
 public class CuisineRegisterService {
 
     private static final String CUISINE_NOT_FOUND_MESSAGE = "There is no cuisine registration with the code %d";
+
     private static final String CUISINE_IN_USE_MESSAGE = "The cuisine with code %d cannot be removed because it is in use";
 
     @Autowired

@@ -1,18 +1,14 @@
 package br.dev.s2w.jfoods.api.adapter.controller;
 
-import br.dev.s2w.jfoods.api.domain.exception.EntityInUseException;
-import br.dev.s2w.jfoods.api.domain.exception.EntityNotFoundException;
 import br.dev.s2w.jfoods.api.domain.model.State;
 import br.dev.s2w.jfoods.api.domain.repository.StateRepository;
 import br.dev.s2w.jfoods.api.domain.service.StateRegisterService;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.Optional;
 
 @RestController
 @RequestMapping("/states")
@@ -30,14 +26,8 @@ public class StateController {
     }
 
     @GetMapping("/{stateId}")
-    public ResponseEntity<State> search(@PathVariable Long stateId) {
-        Optional<State> state = stateRepository.findById(stateId);
-
-        if (state.isPresent()) {
-            return ResponseEntity.ok(state.get());
-        }
-
-        return ResponseEntity.notFound().build();
+    public State find(@PathVariable Long stateId) {
+        return stateRegister.find(stateId);
     }
 
     @PostMapping
@@ -47,29 +37,18 @@ public class StateController {
     }
 
     @PutMapping("/{stateId}")
-    public ResponseEntity<State> update(@PathVariable Long stateId, @RequestBody State state) {
-        Optional<State> currentState = stateRepository.findById(stateId);
+    public State update(@PathVariable Long stateId, @RequestBody State state) {
+        State currentState = stateRegister.find(stateId);
 
-        if (currentState.isPresent()) {
-            BeanUtils.copyProperties(state, currentState.get(), "id");
+        BeanUtils.copyProperties(state, currentState, "id");
 
-            State savedState = stateRegister.save(currentState.get());
-            return ResponseEntity.ok(savedState);
-        }
-
-        return ResponseEntity.notFound().build();
+        return stateRegister.save(currentState);
     }
 
     @DeleteMapping("/{stateId}")
-    public ResponseEntity<?> remove(@PathVariable Long stateId) {
-        try {
-            stateRegister.remove(stateId);
-            return ResponseEntity.noContent().build();
-        } catch (EntityNotFoundException e) {
-            return ResponseEntity.notFound().build();
-        } catch (EntityInUseException e) {
-            return ResponseEntity.status(HttpStatus.CONFLICT).body(e.getMessage());
-        }
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void remove(@PathVariable Long stateId) {
+        stateRegister.remove(stateId);
     }
 
 }

@@ -26,7 +26,7 @@ public class CuisineController {
     }
 
     @GetMapping("/{cuisineId}")
-    public Cuisine search(@PathVariable Long cuisineId) {
+    public Cuisine find(@PathVariable Long cuisineId) {
         return cuisineRegister.find(cuisineId);
     }
 
