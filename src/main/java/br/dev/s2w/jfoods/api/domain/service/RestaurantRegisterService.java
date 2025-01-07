@@ -1,6 +1,6 @@
 package br.dev.s2w.jfoods.api.domain.service;
 
-import br.dev.s2w.jfoods.api.domain.exception.EntityNotFoundException;
+import br.dev.s2w.jfoods.api.domain.exception.RestaurantNotFoundException;
 import br.dev.s2w.jfoods.api.domain.model.Cuisine;
 import br.dev.s2w.jfoods.api.domain.model.Restaurant;
 import br.dev.s2w.jfoods.api.domain.repository.RestaurantRepository;
@@ -10,8 +10,6 @@ import org.springframework.stereotype.Service;
 @Service
 public class RestaurantRegisterService {
 
-    private static final String RESTAURANT_NOT_FOUND_MESSAGE = "There is no restaurant registration with the code %d";
-
     @Autowired
     private RestaurantRepository restaurantRepository;
 
@@ -20,7 +18,7 @@ public class RestaurantRegisterService {
 
     public Restaurant find(Long restaurantId) {
         return restaurantRepository.findById(restaurantId)
-                .orElseThrow(() -> new EntityNotFoundException(String.format(RESTAURANT_NOT_FOUND_MESSAGE, restaurantId)));
+                .orElseThrow(() -> new RestaurantNotFoundException(restaurantId));
     }
 
     public Restaurant save(Restaurant restaurant) {
