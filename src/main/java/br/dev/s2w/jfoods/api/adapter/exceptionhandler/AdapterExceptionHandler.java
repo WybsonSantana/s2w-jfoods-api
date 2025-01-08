@@ -5,14 +5,14 @@ import br.dev.s2w.jfoods.api.domain.exception.EntityInUseException;
 import br.dev.s2w.jfoods.api.domain.exception.EntityNotFoundException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.HttpMediaTypeNotSupportedException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
 import java.time.LocalDateTime;
 
 @ControllerAdvice
-public class AdapterExceptionHandler {
+public class AdapterExceptionHandler extends ResponseEntityExceptionHandler {
 
     @ExceptionHandler(BusinessException.class)
     public ResponseEntity<?> handlerBusinessException(BusinessException e) {
@@ -42,16 +42,6 @@ public class AdapterExceptionHandler {
                 .build();
 
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(problem);
-    }
-
-    @ExceptionHandler(HttpMediaTypeNotSupportedException.class)
-    public ResponseEntity<?> handlerHttpMediaTypeNotSupportedException() {
-        Problem problem = Problem.builder()
-                .timestamp(LocalDateTime.now())
-                .message("Unsupported media type")
-                .build();
-
-        return ResponseEntity.status(HttpStatus.UNSUPPORTED_MEDIA_TYPE).body(problem);
     }
 
 }
