@@ -1,6 +1,7 @@
 package br.dev.s2w.jfoods.api.adapter.exceptionhandler;
 
 import br.dev.s2w.jfoods.api.domain.exception.BusinessException;
+import br.dev.s2w.jfoods.api.domain.exception.EntityInUseException;
 import br.dev.s2w.jfoods.api.domain.exception.EntityNotFoundException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -21,6 +22,16 @@ public class AdapterExceptionHandler {
                 .build();
 
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(problem);
+    }
+
+    @ExceptionHandler(EntityInUseException.class)
+    public ResponseEntity<?> handlerEntityInUseException(EntityInUseException e) {
+        Problem problem = Problem.builder()
+                .timestamp(LocalDateTime.now())
+                .message(e.getMessage())
+                .build();
+
+        return ResponseEntity.status(HttpStatus.CONFLICT).body(problem);
     }
 
     @ExceptionHandler(EntityNotFoundException.class)
