@@ -6,6 +6,7 @@ import br.dev.s2w.jfoods.api.domain.exception.EntityNotFoundException;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.context.request.WebRequest;
@@ -31,6 +32,17 @@ public class AdapterExceptionHandler extends ResponseEntityExceptionHandler {
         }
 
         return super.handleExceptionInternal(e, body, headers, status, request);
+    }
+
+    @Override
+    protected ResponseEntity<Object> handleHttpMessageNotReadable(HttpMessageNotReadableException e, HttpHeaders headers,
+                                                                  HttpStatus status, WebRequest request) {
+        ProblemType problemType = ProblemType.MESSAGE_NOT_READABLE;
+        String detail = "The request payload is invalid. Check syntax error!";
+
+        Problem problem = createProblemBuilder(status, problemType, detail).build();
+
+        return handleExceptionInternal(e, problem, headers, status, request);
     }
 
     @ExceptionHandler(BusinessException.class)
