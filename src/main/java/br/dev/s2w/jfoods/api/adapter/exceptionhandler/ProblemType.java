@@ -5,6 +5,8 @@ import lombok.Getter;
 @Getter
 public enum ProblemType {
 
+    BUSINESS_ERROR("/business-error", "Business rule violation"),
+    ENTITY_IN_USE("/entity-in-use", "Entity in use"),
     ENTITY_NOT_FOUND("/entity-not-found", "Entity not found");
 
     private String title;

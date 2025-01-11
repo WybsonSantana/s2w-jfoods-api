@@ -35,20 +35,26 @@ public class AdapterExceptionHandler extends ResponseEntityExceptionHandler {
 
     @ExceptionHandler(BusinessException.class)
     public ResponseEntity<?> handleBusinessException(BusinessException e, WebRequest request) {
-        var body = e.getMessage();
-        var headers = new HttpHeaders();
-        var status = HttpStatus.BAD_REQUEST;
+        HttpStatus status = HttpStatus.BAD_REQUEST;
+        ProblemType problemType = ProblemType.BUSINESS_ERROR;
+        String detail = e.getMessage();
+        HttpHeaders headers = new HttpHeaders();
 
-        return handleExceptionInternal(e, body, headers, status, request);
+        Problem problem = createProblemBuilder(status, problemType, detail).build();
+
+        return handleExceptionInternal(e, problem, headers, status, request);
     }
 
     @ExceptionHandler(EntityInUseException.class)
     public ResponseEntity<?> handleEntityInUseException(EntityInUseException e, WebRequest request) {
-        var body = e.getMessage();
-        var headers = new HttpHeaders();
-        var status = HttpStatus.CONFLICT;
+        HttpStatus status = HttpStatus.CONFLICT;
+        ProblemType problemType = ProblemType.ENTITY_IN_USE;
+        String detail = e.getMessage();
+        HttpHeaders headers = new HttpHeaders();
 
-        return handleExceptionInternal(e, body, headers, status, request);
+        Problem problem = createProblemBuilder(status, problemType, detail).build();
+
+        return handleExceptionInternal(e, problem, headers, status, request);
     }
 
     @ExceptionHandler(EntityNotFoundException.class)
