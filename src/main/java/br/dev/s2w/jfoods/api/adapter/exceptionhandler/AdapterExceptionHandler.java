@@ -3,7 +3,9 @@ package br.dev.s2w.jfoods.api.adapter.exceptionhandler;
 import br.dev.s2w.jfoods.api.domain.exception.BusinessException;
 import br.dev.s2w.jfoods.api.domain.exception.EntityInUseException;
 import br.dev.s2w.jfoods.api.domain.exception.EntityNotFoundException;
+import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.exc.InvalidFormatException;
+import com.fasterxml.jackson.databind.exc.PropertyBindingException;
 import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -14,6 +16,7 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
+import java.util.List;
 import java.util.stream.Collectors;
 
 @ControllerAdvice
@@ -45,6 +48,8 @@ public class AdapterExceptionHandler extends ResponseEntityExceptionHandler {
 
         if (rootCause instanceof InvalidFormatException) {
             return handleInvalidFormatException((InvalidFormatException) rootCause, headers, status, request);
+        } else if (rootCause instanceof PropertyBindingException) {
+            return handlePropertyBindingException((PropertyBindingException) rootCause, headers, status, request);
         }
 
         ProblemType problemType = ProblemType.MESSAGE_NOT_READABLE;
@@ -93,14 +98,25 @@ public class AdapterExceptionHandler extends ResponseEntityExceptionHandler {
 
     private ResponseEntity<Object> handleInvalidFormatException(InvalidFormatException e, HttpHeaders headers,
                                                                 HttpStatus status, WebRequest request) {
-        String path = e.getPath().stream()
-                .map(reference -> reference.getFieldName())
-                .collect(Collectors.joining("."));
+        String path = joinPath(e.getPath());
 
         ProblemType problemType = ProblemType.MESSAGE_NOT_READABLE;
         String detail = String.format("Property '%s' has been assigned the value '%s', " +
                         "which is of an invalid type. Correct and enter a value compatible with type %s.",
                 path, e.getValue(), e.getTargetType().getSimpleName());
+
+        Problem problem = createProblemBuilder(status, problemType, detail).build();
+
+        return handleExceptionInternal(e, problem, headers, status, request);
+    }
+
+    private ResponseEntity<Object> handlePropertyBindingException(PropertyBindingException e, HttpHeaders headers,
+                                                                  HttpStatus status, WebRequest request) {
+        String path = joinPath(e.getPath());
+
+        ProblemType problemType = ProblemType.MESSAGE_NOT_READABLE;
+        String detail = String.format("Property '%s' does not exist. " +
+                "Please correct or remove this property and try again.", path);
 
         Problem problem = createProblemBuilder(status, problemType, detail).build();
 
@@ -115,4 +131,9 @@ public class AdapterExceptionHandler extends ResponseEntityExceptionHandler {
                 .detail(detail);
     }
 
+    private String joinPath(List<JsonMappingException.Reference> references) {
+        return references.stream()
+                .map(reference -> reference.getFieldName())
+                .collect(Collectors.joining("."));
+    }
 }
