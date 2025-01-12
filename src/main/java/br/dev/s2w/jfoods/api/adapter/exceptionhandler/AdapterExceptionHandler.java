@@ -19,6 +19,7 @@ import org.springframework.web.method.annotation.MethodArgumentTypeMismatchExcep
 import org.springframework.web.servlet.NoHandlerFoundException;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -34,13 +35,17 @@ public class AdapterExceptionHandler extends ResponseEntityExceptionHandler {
 
         if (body == null) {
             body = Problem.builder()
+                    .timestamp(LocalDateTime.now())
                     .title(status.getReasonPhrase())
                     .status(status.value())
+                    .userMessage(GENERIC_USER_MESSAGE)
                     .build();
         } else if (body instanceof String) {
             body = Problem.builder()
+                    .timestamp(LocalDateTime.now())
                     .title((String) body)
                     .status(status.value())
+                    .userMessage(GENERIC_USER_MESSAGE)
                     .build();
         }
 
@@ -61,7 +66,9 @@ public class AdapterExceptionHandler extends ResponseEntityExceptionHandler {
         ProblemType problemType = ProblemType.MESSAGE_NOT_READABLE;
         String detail = "The request payload is invalid. Check syntax error!";
 
-        Problem problem = createProblemBuilder(status, problemType, detail).build();
+        Problem problem = createProblemBuilder(status, problemType, detail)
+                .userMessage(GENERIC_USER_MESSAGE)
+                .build();
 
         return handleExceptionInternal(e, problem, headers, status, request);
     }
@@ -82,7 +89,9 @@ public class AdapterExceptionHandler extends ResponseEntityExceptionHandler {
         ProblemType problemType = ProblemType.RESOURCE_NOT_FOUND;
         String detail = String.format("The resource '%s', which you tried to access, is non-existent.", e.getRequestURL());
 
-        Problem problem = createProblemBuilder(status, problemType, detail).build();
+        Problem problem = createProblemBuilder(status, problemType, detail)
+                .userMessage(GENERIC_USER_MESSAGE)
+                .build();
 
         return handleExceptionInternal(e, problem, headers, status, request);
     }
@@ -94,7 +103,9 @@ public class AdapterExceptionHandler extends ResponseEntityExceptionHandler {
         String detail = e.getMessage();
         HttpHeaders headers = new HttpHeaders();
 
-        Problem problem = createProblemBuilder(status, problemType, detail).build();
+        Problem problem = createProblemBuilder(status, problemType, detail)
+                .userMessage(GENERIC_USER_MESSAGE)
+                .build();
 
         return handleExceptionInternal(e, problem, headers, status, request);
     }
@@ -106,7 +117,9 @@ public class AdapterExceptionHandler extends ResponseEntityExceptionHandler {
         String detail = e.getMessage();
         HttpHeaders headers = new HttpHeaders();
 
-        Problem problem = createProblemBuilder(status, problemType, detail).build();
+        Problem problem = createProblemBuilder(status, problemType, detail)
+                .userMessage(GENERIC_USER_MESSAGE)
+                .build();
 
         return handleExceptionInternal(e, problem, headers, status, request);
     }
@@ -118,7 +131,9 @@ public class AdapterExceptionHandler extends ResponseEntityExceptionHandler {
         String detail = e.getMessage();
         HttpHeaders headers = new HttpHeaders();
 
-        Problem problem = createProblemBuilder(status, problemType, detail).build();
+        Problem problem = createProblemBuilder(status, problemType, detail)
+                .userMessage(GENERIC_USER_MESSAGE)
+                .build();
 
         return handleExceptionInternal(e, problem, headers, status, request);
     }
@@ -130,10 +145,11 @@ public class AdapterExceptionHandler extends ResponseEntityExceptionHandler {
         HttpHeaders headers = new HttpHeaders();
         String detail = GENERIC_USER_MESSAGE;
 
-
         e.printStackTrace();
 
-        Problem problem = createProblemBuilder(status, problemType, detail).build();
+        Problem problem = createProblemBuilder(status, problemType, detail)
+                .userMessage(GENERIC_USER_MESSAGE)
+                .build();
 
         return handleExceptionInternal(e, problem, headers, status, request);
     }
@@ -174,13 +190,16 @@ public class AdapterExceptionHandler extends ResponseEntityExceptionHandler {
                         "which is of an invalid type. Please correct and enter a value compatible with the type %s.",
                 e.getName(), e.getValue(), e.getRequiredType().getSimpleName());
 
-        Problem problem = createProblemBuilder(status, problemType, detail).build();
+        Problem problem = createProblemBuilder(status, problemType, detail)
+                .userMessage(GENERIC_USER_MESSAGE)
+                .build();
 
         return handleExceptionInternal(e, problem, headers, status, request);
     }
 
     private Problem.ProblemBuilder createProblemBuilder(HttpStatus status, ProblemType problemType, String detail) {
         return Problem.builder()
+                .timestamp(LocalDateTime.now())
                 .status(status.value())
                 .type(problemType.getUri())
                 .title(problemType.getTitle())
