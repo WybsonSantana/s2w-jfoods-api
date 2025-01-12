@@ -120,6 +120,21 @@ public class AdapterExceptionHandler extends ResponseEntityExceptionHandler {
         return handleExceptionInternal(e, problem, headers, status, request);
     }
 
+    @ExceptionHandler(Exception.class)
+    public ResponseEntity<Object> handleUncaught(Exception e, WebRequest request) {
+        HttpStatus status = HttpStatus.INTERNAL_SERVER_ERROR;
+        ProblemType problemType = ProblemType.SYSTEM_ERROR;
+        HttpHeaders headers = new HttpHeaders();
+        String detail = "An unexpected internal system error has occurred. " +
+                "Please try again and if the problem persists, contact your system administrator.";
+
+        e.printStackTrace();
+
+        Problem problem = createProblemBuilder(status, problemType, detail).build();
+
+        return handleExceptionInternal(e, problem, headers, status, request);
+    }
+
     private ResponseEntity<Object> handleInvalidFormat(InvalidFormatException e, HttpHeaders headers,
                                                        HttpStatus status, WebRequest request) {
         String path = joinPath(e.getPath());
