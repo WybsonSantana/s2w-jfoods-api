@@ -25,6 +25,9 @@ import java.util.stream.Collectors;
 @ControllerAdvice
 public class AdapterExceptionHandler extends ResponseEntityExceptionHandler {
 
+    public static final String GENERIC_USER_MESSAGE = "An unexpected internal system error has occurred. " +
+            "Please try again and if the problem persists, contact your system administrator.";
+
     @Override
     protected ResponseEntity<Object> handleExceptionInternal(Exception e, Object body, HttpHeaders headers,
                                                              HttpStatus status, WebRequest request) {
@@ -125,8 +128,8 @@ public class AdapterExceptionHandler extends ResponseEntityExceptionHandler {
         HttpStatus status = HttpStatus.INTERNAL_SERVER_ERROR;
         ProblemType problemType = ProblemType.SYSTEM_ERROR;
         HttpHeaders headers = new HttpHeaders();
-        String detail = "An unexpected internal system error has occurred. " +
-                "Please try again and if the problem persists, contact your system administrator.";
+        String detail = GENERIC_USER_MESSAGE;
+
 
         e.printStackTrace();
 
@@ -143,7 +146,9 @@ public class AdapterExceptionHandler extends ResponseEntityExceptionHandler {
                         "which is of an invalid type. Correct and enter a value compatible with type %s.",
                 path, e.getValue(), e.getTargetType().getSimpleName());
 
-        Problem problem = createProblemBuilder(status, problemType, detail).build();
+        Problem problem = createProblemBuilder(status, problemType, detail)
+                .userMessage(GENERIC_USER_MESSAGE)
+                .build();
 
         return handleExceptionInternal(e, problem, headers, status, request);
     }
@@ -155,7 +160,9 @@ public class AdapterExceptionHandler extends ResponseEntityExceptionHandler {
         String detail = String.format("Property '%s' does not exist. " +
                 "Please correct or remove this property and try again.", path);
 
-        Problem problem = createProblemBuilder(status, problemType, detail).build();
+        Problem problem = createProblemBuilder(status, problemType, detail)
+                .userMessage(GENERIC_USER_MESSAGE)
+                .build();
 
         return handleExceptionInternal(e, problem, headers, status, request);
     }
