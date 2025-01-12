@@ -7,6 +7,7 @@ import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.exc.InvalidFormatException;
 import com.fasterxml.jackson.databind.exc.PropertyBindingException;
 import org.apache.commons.lang3.exception.ExceptionUtils;
+import org.springframework.beans.TypeMismatchException;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -14,6 +15,7 @@ import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.context.request.WebRequest;
+import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
 import java.util.List;
@@ -47,9 +49,9 @@ public class AdapterExceptionHandler extends ResponseEntityExceptionHandler {
         Throwable rootCause = ExceptionUtils.getRootCause(e);
 
         if (rootCause instanceof InvalidFormatException) {
-            return handleInvalidFormatException((InvalidFormatException) rootCause, headers, status, request);
+            return handleInvalidFormat((InvalidFormatException) rootCause, headers, status, request);
         } else if (rootCause instanceof PropertyBindingException) {
-            return handlePropertyBindingException((PropertyBindingException) rootCause, headers, status, request);
+            return handlePropertyBinding((PropertyBindingException) rootCause, headers, status, request);
         }
 
         ProblemType problemType = ProblemType.MESSAGE_NOT_READABLE;
@@ -60,8 +62,18 @@ public class AdapterExceptionHandler extends ResponseEntityExceptionHandler {
         return handleExceptionInternal(e, problem, headers, status, request);
     }
 
+    @Override
+    protected ResponseEntity<Object> handleTypeMismatch(TypeMismatchException e,
+                                                        HttpHeaders headers, HttpStatus status, WebRequest request) {
+        if (e instanceof MethodArgumentTypeMismatchException) {
+            return handleMethodArgumentTypeMismatch((MethodArgumentTypeMismatchException) e, headers, status, request);
+        }
+
+        return super.handleTypeMismatch(e, headers, status, request);
+    }
+
     @ExceptionHandler(BusinessException.class)
-    public ResponseEntity<?> handleBusinessException(BusinessException e, WebRequest request) {
+    public ResponseEntity<?> handleBusiness(BusinessException e, WebRequest request) {
         HttpStatus status = HttpStatus.BAD_REQUEST;
         ProblemType problemType = ProblemType.BUSINESS_ERROR;
         String detail = e.getMessage();
@@ -73,7 +85,7 @@ public class AdapterExceptionHandler extends ResponseEntityExceptionHandler {
     }
 
     @ExceptionHandler(EntityInUseException.class)
-    public ResponseEntity<?> handleEntityInUseException(EntityInUseException e, WebRequest request) {
+    public ResponseEntity<?> handleEntityInUse(EntityInUseException e, WebRequest request) {
         HttpStatus status = HttpStatus.CONFLICT;
         ProblemType problemType = ProblemType.ENTITY_IN_USE;
         String detail = e.getMessage();
@@ -85,7 +97,7 @@ public class AdapterExceptionHandler extends ResponseEntityExceptionHandler {
     }
 
     @ExceptionHandler(EntityNotFoundException.class)
-    public ResponseEntity<?> handleEntityNotFoundException(EntityNotFoundException e, WebRequest request) {
+    public ResponseEntity<?> handleEntityNotFound(EntityNotFoundException e, WebRequest request) {
         HttpStatus status = HttpStatus.NOT_FOUND;
         ProblemType problemType = ProblemType.ENTITY_NOT_FOUND;
         String detail = e.getMessage();
@@ -96,10 +108,9 @@ public class AdapterExceptionHandler extends ResponseEntityExceptionHandler {
         return handleExceptionInternal(e, problem, headers, status, request);
     }
 
-    private ResponseEntity<Object> handleInvalidFormatException(InvalidFormatException e, HttpHeaders headers,
-                                                                HttpStatus status, WebRequest request) {
+    private ResponseEntity<Object> handleInvalidFormat(InvalidFormatException e, HttpHeaders headers,
+                                                       HttpStatus status, WebRequest request) {
         String path = joinPath(e.getPath());
-
         ProblemType problemType = ProblemType.MESSAGE_NOT_READABLE;
         String detail = String.format("Property '%s' has been assigned the value '%s', " +
                         "which is of an invalid type. Correct and enter a value compatible with type %s.",
@@ -110,13 +121,24 @@ public class AdapterExceptionHandler extends ResponseEntityExceptionHandler {
         return handleExceptionInternal(e, problem, headers, status, request);
     }
 
-    private ResponseEntity<Object> handlePropertyBindingException(PropertyBindingException e, HttpHeaders headers,
-                                                                  HttpStatus status, WebRequest request) {
+    private ResponseEntity<Object> handlePropertyBinding(PropertyBindingException e, HttpHeaders headers,
+                                                         HttpStatus status, WebRequest request) {
         String path = joinPath(e.getPath());
-
         ProblemType problemType = ProblemType.MESSAGE_NOT_READABLE;
         String detail = String.format("Property '%s' does not exist. " +
                 "Please correct or remove this property and try again.", path);
+
+        Problem problem = createProblemBuilder(status, problemType, detail).build();
+
+        return handleExceptionInternal(e, problem, headers, status, request);
+    }
+
+    private ResponseEntity<Object> handleMethodArgumentTypeMismatch(MethodArgumentTypeMismatchException e, HttpHeaders headers,
+                                                                    HttpStatus status, WebRequest request) {
+        ProblemType problemType = ProblemType.INVALID_PARAMETER;
+        String detail = String.format("The URL parameter '%s' was assigned the value '%s', " +
+                        "which is of an invalid type. Please correct and enter a value compatible with the type %s.",
+                e.getName(), e.getValue(), e.getRequiredType().getSimpleName());
 
         Problem problem = createProblemBuilder(status, problemType, detail).build();
 
