@@ -9,6 +9,7 @@ public enum ProblemType {
     ENTITY_IN_USE("/entity-in-use", "Entity in use"),
     RESOURCE_NOT_FOUND("/resource-not-found", "Resource not found"),
     MESSAGE_NOT_READABLE("/message-not-readable", "Message not readable"),
+    INVALID_DATA("/invalid-data", "Invalid data"),
     INVALID_PARAMETER("/invalid-parameter", "Invalid parameter"),
     SYSTEM_ERROR("/system-error", "System error");
 
