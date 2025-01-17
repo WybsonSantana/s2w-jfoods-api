@@ -7,7 +7,9 @@ import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
 import javax.persistence.*;
+import javax.validation.Valid;
 import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 import javax.validation.constraints.PositiveOrZero;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
@@ -23,21 +25,17 @@ public class Restaurant {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    //@NotNull
-    //@NotEmpty
     @NotBlank
     @Column(nullable = false)
     private String name;
 
-    //@DecimalMin("0")
     @PositiveOrZero
     @Column(name = "delivery_fee", nullable = false)
     private BigDecimal deliveryFee;
 
-    //@JsonIgnoreProperties("hibernateLazyInitializer")
-
-
-    @ManyToOne //(fetch = FetchType.LAZY)
+    @Valid
+    @NotNull
+    @ManyToOne
     @JoinColumn(name = "cuisine_id", nullable = false)
     private Cuisine cuisine;
 
