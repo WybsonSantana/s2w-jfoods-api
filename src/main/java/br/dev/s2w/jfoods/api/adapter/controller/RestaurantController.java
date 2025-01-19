@@ -1,5 +1,6 @@
 package br.dev.s2w.jfoods.api.adapter.controller;
 
+import br.dev.s2w.jfoods.api.Groups;
 import br.dev.s2w.jfoods.api.domain.exception.BusinessException;
 import br.dev.s2w.jfoods.api.domain.exception.CuisineNotFoundException;
 import br.dev.s2w.jfoods.api.domain.model.Restaurant;
@@ -14,10 +15,10 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.http.server.ServletServerHttpRequest;
 import org.springframework.util.ReflectionUtils;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
-import javax.validation.Valid;
 import java.lang.reflect.Field;
 import java.util.List;
 import java.util.Map;
@@ -45,7 +46,7 @@ public class RestaurantController {
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public Restaurant add(@RequestBody @Valid Restaurant restaurant) {
+    public Restaurant add(@RequestBody @Validated(Groups.RestaurantRegistration.class) Restaurant restaurant) {
         try {
             return restaurantRegister.save(restaurant);
         } catch (CuisineNotFoundException e) {

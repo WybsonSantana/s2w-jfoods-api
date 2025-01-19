@@ -1,5 +1,6 @@
 package br.dev.s2w.jfoods.api.domain.model;
 
+import br.dev.s2w.jfoods.api.Groups;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -25,16 +26,16 @@ public class Restaurant {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @NotBlank
+    @NotBlank(groups = Groups.RestaurantRegistration.class)
     @Column(nullable = false)
     private String name;
 
-    @PositiveOrZero
+    @PositiveOrZero(groups = Groups.RestaurantRegistration.class)
     @Column(name = "delivery_fee", nullable = false)
     private BigDecimal deliveryFee;
 
     @Valid
-    @NotNull
+    @NotNull(groups = Groups.RestaurantRegistration.class)
     @ManyToOne
     @JoinColumn(name = "cuisine_id", nullable = false)
     private Cuisine cuisine;

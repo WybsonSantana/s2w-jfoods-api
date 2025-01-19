@@ -1,5 +1,6 @@
 package br.dev.s2w.jfoods.api.domain.model;
 
+import br.dev.s2w.jfoods.api.Groups;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -13,7 +14,7 @@ import java.util.List;
 @EqualsAndHashCode(onlyExplicitlyIncluded = true)
 @Entity
 public class Cuisine {
-    @NotNull
+    @NotNull(groups = Groups.RestaurantRegistration.class)
     @EqualsAndHashCode.Include
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

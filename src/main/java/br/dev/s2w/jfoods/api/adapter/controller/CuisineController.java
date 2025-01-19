@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import java.util.List;
 
 @RestController
@@ -32,7 +33,7 @@ public class CuisineController {
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public Cuisine add(@RequestBody Cuisine cuisine) {
+    public Cuisine add(@RequestBody @Valid Cuisine cuisine) {
         return cuisineRegister.save(cuisine);
     }
 
