@@ -1,7 +1,7 @@
 package br.dev.s2w.jfoods.api.domain.model;
 
-import br.dev.s2w.jfoods.api.core.validation.DeliveryFee;
 import br.dev.s2w.jfoods.api.core.validation.Groups;
+import br.dev.s2w.jfoods.api.core.validation.Multiple;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -12,6 +12,7 @@ import javax.persistence.*;
 import javax.validation.Valid;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
+import javax.validation.constraints.PositiveOrZero;
 import javax.validation.groups.ConvertGroup;
 import javax.validation.groups.Default;
 import java.math.BigDecimal;
@@ -33,8 +34,8 @@ public class Restaurant {
     private String name;
 
     @NotNull
-    @DeliveryFee
-    //@PositiveOrZero
+    @PositiveOrZero
+    @Multiple(number = 5)
     @Column(name = "delivery_fee", nullable = false)
     private BigDecimal deliveryFee;
 
