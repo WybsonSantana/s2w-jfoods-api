@@ -1,6 +1,6 @@
 package br.dev.s2w.jfoods.api.domain.model;
 
-import br.dev.s2w.jfoods.api.Groups;
+import br.dev.s2w.jfoods.api.core.validation.Groups;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
