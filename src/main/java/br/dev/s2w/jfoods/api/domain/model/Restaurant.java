@@ -1,5 +1,6 @@
 package br.dev.s2w.jfoods.api.domain.model;
 
+import br.dev.s2w.jfoods.api.core.validation.FreeDeliveryFeeIncludesDescription;
 import br.dev.s2w.jfoods.api.core.validation.Groups;
 import br.dev.s2w.jfoods.api.core.validation.Multiple;
 import com.fasterxml.jackson.annotation.JsonIgnore;
@@ -20,6 +21,8 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
+@FreeDeliveryFeeIncludesDescription(fieldValue = "deliveryFee",
+        fieldDescription = "name", requiredDescription = "Frete Grátis")
 @Data
 @EqualsAndHashCode(onlyExplicitlyIncluded = true)
 @Entity
