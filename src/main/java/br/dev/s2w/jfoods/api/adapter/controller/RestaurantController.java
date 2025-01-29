@@ -1,5 +1,6 @@
 package br.dev.s2w.jfoods.api.adapter.controller;
 
+import br.dev.s2w.jfoods.api.core.validation.ValidationException;
 import br.dev.s2w.jfoods.api.domain.exception.BusinessException;
 import br.dev.s2w.jfoods.api.domain.exception.CuisineNotFoundException;
 import br.dev.s2w.jfoods.api.domain.model.Restaurant;
@@ -14,6 +15,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.http.server.ServletServerHttpRequest;
 import org.springframework.util.ReflectionUtils;
+import org.springframework.validation.BeanPropertyBindingResult;
+import org.springframework.validation.SmartValidator;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
@@ -32,6 +35,10 @@ public class RestaurantController {
 
     @Autowired
     private RestaurantRegisterService restaurantRegister;
+
+    @Autowired
+    private SmartValidator validator;
+
 
     @GetMapping
     public List<Restaurant> list() {
@@ -73,6 +80,7 @@ public class RestaurantController {
         Restaurant currentRestaurant = restaurantRegister.find(restaurantId);
 
         merge(fields, currentRestaurant, request);
+        validate(currentRestaurant, "restaurant");
 
         return update(restaurantId, currentRestaurant);
     }
@@ -99,6 +107,15 @@ public class RestaurantController {
         } catch (IllegalArgumentException e) {
             Throwable rootCause = ExceptionUtils.getRootCause(e);
             throw new HttpMessageNotReadableException(e.getMessage(), rootCause, serverHttpRequest);
+        }
+    }
+
+    private void validate(Restaurant restaurant, String objectName) {
+        BeanPropertyBindingResult bindingResult = new BeanPropertyBindingResult(restaurant, objectName);
+        validator.validate(restaurant, bindingResult);
+
+        if (bindingResult.hasErrors()) {
+            throw new ValidationException(bindingResult);
         }
     }
 
