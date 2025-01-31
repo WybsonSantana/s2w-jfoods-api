@@ -15,6 +15,7 @@ import java.util.List;
 @EqualsAndHashCode(onlyExplicitlyIncluded = true)
 @Entity
 public class Cuisine {
+
     @NotNull(groups = Groups.CuisineId.class)
     @EqualsAndHashCode.Include
     @Id
@@ -28,4 +29,5 @@ public class Cuisine {
     @JsonIgnore
     @OneToMany(mappedBy = "cuisine")
     private List<Restaurant> restaurants = new ArrayList<>();
+
 }

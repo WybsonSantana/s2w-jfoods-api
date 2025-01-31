@@ -11,7 +11,9 @@ public class FreeDeliveryFeeIncludesDescriptionValidator
         implements ConstraintValidator<FreeDeliveryFeeIncludesDescription, Object> {
 
     private String fieldValue;
+
     private String fieldDescription;
+
     private String requiredDescription;
 
     @Override

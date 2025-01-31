@@ -12,6 +12,7 @@ import javax.validation.constraints.NotNull;
 @EqualsAndHashCode(onlyExplicitlyIncluded = true)
 @Entity
 public class State {
+
     @NotNull(groups = Groups.StateId.class)
     @EqualsAndHashCode.Include
     @Id
@@ -21,4 +22,5 @@ public class State {
     @NotBlank
     @Column(nullable = false)
     private String name;
+
 }

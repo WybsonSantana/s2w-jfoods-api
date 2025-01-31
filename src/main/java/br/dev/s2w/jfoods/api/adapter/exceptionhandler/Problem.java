@@ -11,19 +11,29 @@ import java.util.List;
 @Getter
 @Builder
 public class Problem {
+
     private LocalDateTime timestamp;
+
     private Integer status;
+
     private String type;
+
     private String title;
+
     private String detail;
+
     private String userMessage;
+
     private List<Object> objects;
 
     @Getter
     @Builder
     public static class Object {
+
         private String name;
+
         private String userMessage;
+
     }
 
 }

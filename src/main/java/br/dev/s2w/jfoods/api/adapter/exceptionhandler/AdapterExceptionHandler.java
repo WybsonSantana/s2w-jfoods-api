@@ -1,6 +1,5 @@
 package br.dev.s2w.jfoods.api.adapter.exceptionhandler;
 
-import br.dev.s2w.jfoods.api.core.validation.ValidationException;
 import br.dev.s2w.jfoods.api.domain.exception.BusinessException;
 import br.dev.s2w.jfoods.api.domain.exception.EntityInUseException;
 import br.dev.s2w.jfoods.api.domain.exception.EntityNotFoundException;
@@ -109,9 +108,34 @@ public class AdapterExceptionHandler extends ResponseEntityExceptionHandler {
     @Override
     protected ResponseEntity<Object> handleMethodArgumentNotValid(MethodArgumentNotValidException e,
                                                                   HttpHeaders headers, HttpStatus status, WebRequest request) {
+        ProblemType problemType = ProblemType.INVALID_DATA;
+        String detail = "One or more fields are invalid. Fill in correctly and try again!";
+
         BindingResult bindingResult = e.getBindingResult();
 
-        return handleValidationInternal(e, bindingResult, headers, status, request);
+        List<Problem.Object> problemObjects = bindingResult.getAllErrors().stream()
+                .map(objectError -> {
+                    String message = messageSource.getMessage(objectError, LocaleContextHolder.getLocale());
+
+                    String name = objectError.getObjectName();
+
+                    if (objectError instanceof FieldError) {
+                        name = ((FieldError) objectError).getField();
+                    }
+
+                    return Problem.Object.builder()
+                            .name(name)
+                            .userMessage(message)
+                            .build();
+                })
+                .collect(Collectors.toList());
+
+        Problem problem = createProblemBuilder(status, problemType, detail)
+                .userMessage(detail)
+                .objects(problemObjects)
+                .build();
+
+        return handleExceptionInternal(e, problem, headers, status, request);
     }
 
     @ExceptionHandler(BusinessException.class)
@@ -170,14 +194,6 @@ public class AdapterExceptionHandler extends ResponseEntityExceptionHandler {
                 .build();
 
         return handleExceptionInternal(e, problem, headers, status, request);
-    }
-
-    @ExceptionHandler(ValidationException.class)
-    public ResponseEntity<Object> handleValidationException(ValidationException e, WebRequest request) {
-        HttpHeaders headers = new HttpHeaders();
-        HttpStatus status = HttpStatus.BAD_REQUEST;
-
-        return handleValidationInternal(e, e.getBindingResult(), headers, status, request);
     }
 
     private ResponseEntity<Object> handleInvalidFormat(InvalidFormatException e, HttpHeaders headers,

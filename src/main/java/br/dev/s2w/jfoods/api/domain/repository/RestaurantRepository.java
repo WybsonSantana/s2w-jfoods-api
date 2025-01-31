@@ -13,6 +13,7 @@ import java.util.Optional;
 @Repository
 public interface RestaurantRepository extends CustomJpaRepository<Restaurant, Long>,
         RestaurantRepositoryQueries, JpaSpecificationExecutor<Restaurant> {
+
     @Query("from Restaurant restaurant join fetch restaurant.cuisine")
     List<Restaurant> findAll();
 
@@ -28,4 +29,5 @@ public interface RestaurantRepository extends CustomJpaRepository<Restaurant, Lo
     List<Restaurant> queryTop2ByNameContaining(String name);
 
     int countByCuisineId(Long cuisineId);
+
 }

@@ -9,6 +9,7 @@ import javax.persistence.*;
 @EqualsAndHashCode(onlyExplicitlyIncluded = true)
 @Entity
 public class PaymentMethod {
+
     @EqualsAndHashCode.Include
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -16,4 +17,5 @@ public class PaymentMethod {
 
     @Column(nullable = false)
     private String description;
+
 }

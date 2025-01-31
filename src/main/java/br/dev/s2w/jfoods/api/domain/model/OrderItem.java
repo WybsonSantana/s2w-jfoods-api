@@ -10,6 +10,7 @@ import java.math.BigDecimal;
 @EqualsAndHashCode(onlyExplicitlyIncluded = true)
 @Entity
 public class OrderItem {
+
     @EqualsAndHashCode.Include
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -30,4 +31,5 @@ public class OrderItem {
     @ManyToOne
     @JoinColumn(nullable = false)
     private Product product;
+
 }

@@ -14,6 +14,7 @@ import java.util.List;
 @EqualsAndHashCode(onlyExplicitlyIncluded = true)
 @Entity
 public class DeliveryOrder {
+
     @EqualsAndHashCode.Include
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -53,4 +54,5 @@ public class DeliveryOrder {
 
     @OneToMany(mappedBy = "deliveryOrder")
     private List<OrderItem> items = new ArrayList<>();
+
 }

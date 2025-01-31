@@ -15,6 +15,7 @@ import javax.validation.groups.Default;
 @EqualsAndHashCode(onlyExplicitlyIncluded = true)
 @Entity
 public class City {
+
     @EqualsAndHashCode.Include
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -30,4 +31,5 @@ public class City {
     @ManyToOne
     @JoinColumn(nullable = false)
     private State state;
+
 }

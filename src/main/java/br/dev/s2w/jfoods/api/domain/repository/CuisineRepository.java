@@ -8,9 +8,11 @@ import java.util.Optional;
 
 @Repository
 public interface CuisineRepository extends CustomJpaRepository<Cuisine, Long> {
+
     List<Cuisine> findAllByNameContaining(String name);
 
     Optional<Cuisine> findByName(String name);
 
     boolean existsByName(String name);
+
 }

@@ -7,6 +7,7 @@ import javax.persistence.*;
 @Data
 @Embeddable
 public class Address {
+
     @Column(name = "address_postal_code")
     private String postalCode;
 
@@ -25,4 +26,5 @@ public class Address {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "address_city_id")
     private City city;
+
 }

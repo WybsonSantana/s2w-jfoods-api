@@ -9,6 +9,7 @@ import javax.persistence.*;
 @EqualsAndHashCode(onlyExplicitlyIncluded = true)
 @Entity
 public class Permission {
+
     @EqualsAndHashCode.Include
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -19,4 +20,5 @@ public class Permission {
 
     @Column(nullable = false)
     private String description;
+
 }

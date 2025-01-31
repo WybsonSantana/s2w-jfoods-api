@@ -16,4 +16,5 @@ public class RestaurantSpecs {
         return (root, query, builder) ->
                 builder.like(root.get("name"), "%" + name + "%");
     }
+
 }
