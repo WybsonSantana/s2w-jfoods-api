@@ -17,7 +17,7 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 
 @ExtendWith(SpringExtension.class)
 @SpringBootTest
-public class CuisineRegisterIntegrationTest {
+public class CuisineRegisterIT {
 
     @Autowired
     private CuisineRegisterService cuisineRegister;
