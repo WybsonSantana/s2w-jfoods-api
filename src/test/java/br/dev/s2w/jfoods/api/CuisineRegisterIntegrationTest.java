@@ -21,7 +21,7 @@ public class CuisineRegisterIntegrationTest {
     private CuisineRegisterService cuisineRegister;
 
     @Test
-    public void testCuisineRegistrationSuccessfully() {
+    public void shouldAssignId_WhenRegisteringCuisineWithCorrectData() {
 // scenario
         Cuisine newCuisine = new Cuisine();
         newCuisine.setName("Chinesa");
@@ -34,7 +34,7 @@ public class CuisineRegisterIntegrationTest {
     }
 
     @Test
-    public void testCuisineRegistrationWithoutName() {
+    public void shouldFail_WhenRegisteringCuisineWithoutName() {
         // scenario
         Cuisine newCuisine = new Cuisine();
         newCuisine.setName(null);
