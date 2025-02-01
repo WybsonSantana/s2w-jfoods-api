@@ -1,5 +1,7 @@
 package br.dev.s2w.jfoods.api;
 
+import br.dev.s2w.jfoods.api.domain.exception.EntityInUseException;
+import br.dev.s2w.jfoods.api.domain.exception.EntityNotFoundException;
 import br.dev.s2w.jfoods.api.domain.model.Cuisine;
 import br.dev.s2w.jfoods.api.domain.service.CuisineRegisterService;
 import org.junit.jupiter.api.Test;
@@ -21,31 +23,38 @@ public class CuisineRegisterIntegrationTest {
     private CuisineRegisterService cuisineRegister;
 
     @Test
-    public void shouldAssignId_WhenRegisteringCuisineWithCorrectData() {
-// scenario
+    public void shouldAssignIdWhenRegisteringCuisineWithCorrectData() {
         Cuisine newCuisine = new Cuisine();
         newCuisine.setName("Chinesa");
 
-        // action
         newCuisine = cuisineRegister.save(newCuisine);
 
-// validation
         assertThat(newCuisine.getId()).isNotNull();
     }
 
     @Test
-    public void shouldFail_WhenRegisteringCuisineWithoutName() {
-        // scenario
+    public void shouldFailWhenRegisteringCuisineWithoutName() {
         Cuisine newCuisine = new Cuisine();
         newCuisine.setName(null);
 
-        // action
-        ConstraintViolationException expectedError = assertThrows(ConstraintViolationException.class, () -> {
-            cuisineRegister.save(newCuisine);
-        });
+        assertThrows(ConstraintViolationException.class, () ->
+                cuisineRegister.save(newCuisine));
+    }
 
-        // validation
-        assertThat(expectedError).isNotNull();
+    @Test
+    public void shouldFailWhenDeletingCuisineInUse() {
+        Long cuisineId = 1L;
+
+        assertThrows(EntityInUseException.class, () ->
+                cuisineRegister.remove(cuisineId));
+    }
+
+    @Test
+    public void shouldFailWhenDeletingCuisineNotFound() {
+        Long cuisineId = 100L;
+
+        assertThrows(EntityNotFoundException.class, () ->
+                cuisineRegister.remove(cuisineId));
     }
 
 }
