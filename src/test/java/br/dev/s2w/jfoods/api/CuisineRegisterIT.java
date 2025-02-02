@@ -1,7 +1,7 @@
 package br.dev.s2w.jfoods.api;
 
 import io.restassured.http.ContentType;
-import org.hamcrest.Matchers;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -9,8 +9,8 @@ import org.springframework.boot.test.web.server.LocalServerPort;
 import org.springframework.http.HttpStatus;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
-import static io.restassured.RestAssured.enableLoggingOfRequestAndResponseIfValidationFails;
-import static io.restassured.RestAssured.given;
+import static io.restassured.RestAssured.*;
+import static org.hamcrest.Matchers.hasItems;
 import static org.hamcrest.Matchers.hasSize;
 
 @ExtendWith(SpringExtension.class)
@@ -18,15 +18,18 @@ import static org.hamcrest.Matchers.hasSize;
 public class CuisineRegisterIT {
 
     @LocalServerPort
-    private int port;
+    private int serverPort;
+
+    @BeforeEach
+    public void setup() {
+        enableLoggingOfRequestAndResponseIfValidationFails();
+        port = serverPort;
+        basePath = "/cuisines";
+    }
 
     @Test
     public void shouldReturnStatus200WhenQueryingCuisines() {
-        enableLoggingOfRequestAndResponseIfValidationFails();
-
         given()
-                .basePath("/cuisines")
-                .port(port)
                 .accept(ContentType.JSON)
                 .when()
                 .get()
@@ -36,17 +39,13 @@ public class CuisineRegisterIT {
 
     @Test
     public void shouldContain4CuisinesWhenQueryingCuisines() {
-        enableLoggingOfRequestAndResponseIfValidationFails();
-
         given()
-                .basePath("/cuisines")
-                .port(port)
                 .accept(ContentType.JSON)
                 .when()
                 .get()
                 .then()
                 .body("", hasSize(4))
-                .body("name", Matchers.hasItems("Indiana", "Tailandesa", "Argentina", "Brasileira"));
+                .body("name", hasItems("Indiana", "Tailandesa", "Argentina", "Brasileira"));
     }
 
 }
