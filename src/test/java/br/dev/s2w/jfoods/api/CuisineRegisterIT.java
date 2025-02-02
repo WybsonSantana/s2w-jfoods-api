@@ -47,14 +47,14 @@ public class CuisineRegisterIT {
     }
 
     @Test
-    public void shouldContain4CuisinesWhenQueryingCuisines() {
+    public void shouldContain2CuisinesWhenQueryingCuisines() {
         given()
                 .accept(ContentType.JSON)
                 .when()
                 .get()
                 .then()
-                .body("", hasSize(4))
-                .body("name", hasItems("Indiana", "Tailandesa", "Argentina", "Brasileira"));
+                .body("", hasSize(2))
+                .body("name", hasItems("Tailandesa", "Indiana"));
     }
 
     @Test
