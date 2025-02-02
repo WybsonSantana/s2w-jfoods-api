@@ -1,9 +1,11 @@
 package br.dev.s2w.jfoods.api;
 
 import io.restassured.http.ContentType;
+import org.flywaydb.core.Flyway;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.server.LocalServerPort;
 import org.springframework.http.HttpStatus;
@@ -20,11 +22,16 @@ public class CuisineRegisterIT {
     @LocalServerPort
     private int serverPort;
 
+    @Autowired
+    private Flyway flyway;
+
     @BeforeEach
     public void setup() {
         enableLoggingOfRequestAndResponseIfValidationFails();
         port = serverPort;
         basePath = "/cuisines";
+
+        flyway.migrate();
     }
 
     @Test
