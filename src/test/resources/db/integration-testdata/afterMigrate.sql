@@ -25,5 +25,5 @@ alter table restaurant auto_increment = 1;
 alter table role auto_increment = 1;
 alter table state auto_increment = 1;
 
-insert into cuisine(id, name) values(1, 'Tailandesa');
-insert into cuisine(id, name) values(2, 'Indiana');
+insert into cuisine(id, name) values(1, 'Brasileira');
+insert into cuisine(id, name) values(2, 'Americana');

@@ -13,8 +13,7 @@ import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import static io.restassured.RestAssured.*;
-import static org.hamcrest.Matchers.hasItems;
-import static org.hamcrest.Matchers.hasSize;
+import static org.hamcrest.Matchers.*;
 
 @ExtendWith(SpringExtension.class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
@@ -54,7 +53,7 @@ public class CuisineRegisterIT {
                 .get()
                 .then()
                 .body("", hasSize(2))
-                .body("name", hasItems("Tailandesa", "Indiana"));
+                .body("name", hasItems("Brasileira", "Americana"));
     }
 
     @Test
@@ -67,6 +66,29 @@ public class CuisineRegisterIT {
                 .post()
                 .then()
                 .statusCode(HttpStatus.CREATED.value());
+    }
+
+    @Test
+    public void shouldReturnCorrectResponseAndStatusWhenQueryingExistingCuisine() {
+        given()
+                .pathParam("cuisineId", 2)
+                .accept(ContentType.JSON)
+                .when()
+                .get("/{cuisineId}")
+                .then()
+                .statusCode(HttpStatus.OK.value())
+                .body("name", equalTo("Americana"));
+    }
+
+    @Test
+    public void shouldReturnStatus404WhenQueryingNonExistentCuisine() {
+        given()
+                .pathParam("cuisineId", 100)
+                .accept(ContentType.JSON)
+                .when()
+                .get("/{cuisineId}")
+                .then()
+                .statusCode(HttpStatus.NOT_FOUND.value());
     }
 
 }
