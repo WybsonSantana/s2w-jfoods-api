@@ -48,4 +48,16 @@ public class CuisineRegisterIT {
                 .body("name", hasItems("Indiana", "Tailandesa", "Argentina", "Brasileira"));
     }
 
+    @Test
+    public void shouldReturnStatus201WhenRegisteringCuisine() {
+        given()
+                .body("{\"name\":\"Chinesa\"}")
+                .contentType(ContentType.JSON)
+                .accept(ContentType.JSON)
+                .when()
+                .post()
+                .then()
+                .statusCode(HttpStatus.CREATED.value());
+    }
+
 }
