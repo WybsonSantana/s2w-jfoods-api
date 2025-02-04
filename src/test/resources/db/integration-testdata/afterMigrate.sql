@@ -27,3 +27,6 @@ alter table state auto_increment = 1;
 
 insert into cuisine(id, name) values(1, 'Brasileira');
 insert into cuisine(id, name) values(2, 'Americana');
+
+insert into restaurant(id, name, delivery_fee, cuisine_id, registration_date, last_update_date) values(1, 'Comida Goiana', 10.0, 1, utc_timestamp, utc_timestamp);
+insert into restaurant(id, name, delivery_fee, cuisine_id, registration_date, last_update_date) values(2, 'Burger Top', 10.0, 2, utc_timestamp, utc_timestamp);

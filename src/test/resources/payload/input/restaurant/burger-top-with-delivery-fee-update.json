@@ -1,0 +1,7 @@
+{
+  "name": "Burger Top",
+  "deliveryFee": 15,
+  "cuisine": {
+    "id": 2
+  }
+}

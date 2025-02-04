@@ -2,6 +2,7 @@ package br.dev.s2w.jfoods.api.adapter.controller;
 
 import br.dev.s2w.jfoods.api.domain.model.Cuisine;
 import br.dev.s2w.jfoods.api.domain.repository.CuisineRepository;
+import br.dev.s2w.jfoods.api.domain.service.CuisineRegisterService;
 import br.dev.s2w.jfoods.api.util.GeneralUtils;
 import io.restassured.http.ContentType;
 import org.flywaydb.core.Flyway;
@@ -32,6 +33,15 @@ public class CuisineControllerIT extends GeneralUtils {
 
     @Autowired
     private CuisineRepository cuisineRepository;
+
+    @Autowired
+    private CuisineRegisterService cuisineRegister;
+
+    private static final String CUISINE_ID_PARAM = "cuisineId";
+    private static final String CUISINE_ID_MAPPING = "/{cuisineId}";
+    private static final String NAME_ATTRIBUTE = "name";
+    private static final Long EXISTENT_AND_IN_USE_AMERICAN_CUISINE_ID = 2L;
+    private static final Long NON_EXISTENT_CUISINE_ID = 100L;
 
     @BeforeEach
     public void setup() {
@@ -65,8 +75,24 @@ public class CuisineControllerIT extends GeneralUtils {
     }
 
     @Test
+    public void shouldReturnCorrectResponseAndStatusWhenQueryingExistingCuisine() {
+        Cuisine americanCuisine = cuisineRepository
+                .findById(EXISTENT_AND_IN_USE_AMERICAN_CUISINE_ID).orElseThrow();
+
+        given()
+                .pathParam(CUISINE_ID_PARAM, EXISTENT_AND_IN_USE_AMERICAN_CUISINE_ID)
+                .accept(ContentType.JSON)
+                .when()
+                .get(CUISINE_ID_MAPPING)
+                .then()
+                .statusCode(HttpStatus.OK.value())
+                .body(NAME_ATTRIBUTE, equalTo(americanCuisine.getName()));
+    }
+
+    @Test
     public void shouldReturnStatus201WhenRegisteringCuisine() {
-        String chineseCuisineInputJson = super.getContentFromResource("/payload/input/cuisine/chinesa.json");
+        String chineseCuisineInputJson = super
+                .getContentFromResource("/payload/input/cuisine/chinese.json");
 
         given()
                 .body(chineseCuisineInputJson)
@@ -79,31 +105,102 @@ public class CuisineControllerIT extends GeneralUtils {
     }
 
     @Test
-    public void shouldReturnCorrectResponseAndStatusWhenQueryingExistingCuisine() {
-        Long existentCuisineId = 2L;
-        Cuisine americanCuisine = cuisineRepository.findById(existentCuisineId).orElseThrow();
+    public void shouldReturnStatus200WhenUpdatingCuisine() {
+        String northAmericanCuisineInputJson = super
+                .getContentFromResource("/payload/input/cuisine/north-american.json");
 
         given()
-                .pathParam("cuisineId", existentCuisineId)
+                .pathParam(CUISINE_ID_PARAM, EXISTENT_AND_IN_USE_AMERICAN_CUISINE_ID)
+                .body(northAmericanCuisineInputJson)
+                .contentType(ContentType.JSON)
                 .accept(ContentType.JSON)
                 .when()
-                .get("/{cuisineId}")
+                .put(CUISINE_ID_MAPPING)
                 .then()
-                .statusCode(HttpStatus.OK.value())
-                .body("name", equalTo(americanCuisine.getName()));
+                .statusCode(HttpStatus.OK.value());
+    }
+
+    @Test
+    public void shouldReturnStatus204WhenDeletingCuisine() {
+        Cuisine northAmericanCuisine = new Cuisine();
+        northAmericanCuisine.setName("Norte Americana");
+
+        northAmericanCuisine = cuisineRegister.save(northAmericanCuisine);
+
+        given()
+                .pathParam(CUISINE_ID_PARAM, northAmericanCuisine.getId())
+                .contentType(ContentType.JSON)
+                .accept(ContentType.JSON)
+                .when()
+                .delete(CUISINE_ID_MAPPING)
+                .then()
+                .statusCode(HttpStatus.NO_CONTENT.value());
     }
 
     @Test
     public void shouldReturnStatus404WhenQueryingNonExistentCuisine() {
-        Long nonExistentCuisineId = 100L;
-
         given()
-                .pathParam("cuisineId", nonExistentCuisineId)
+                .pathParam(CUISINE_ID_PARAM, NON_EXISTENT_CUISINE_ID)
                 .accept(ContentType.JSON)
                 .when()
                 .get("/{cuisineId}")
                 .then()
                 .statusCode(HttpStatus.NOT_FOUND.value());
+    }
+
+    @Test
+    public void shouldReturnStatus404WhenDeletingNonExistentCuisine() {
+        given()
+                .pathParam(CUISINE_ID_PARAM, NON_EXISTENT_CUISINE_ID)
+                .contentType(ContentType.JSON)
+                .accept(ContentType.JSON)
+                .when()
+                .delete(CUISINE_ID_MAPPING)
+                .then()
+                .statusCode(HttpStatus.NOT_FOUND.value());
+    }
+
+    @Test
+    public void shouldReturnStatus404WhenUpdatingNonExistentCuisine() {
+        String northAmericanCuisineInputJson = super
+                .getContentFromResource("/payload/input/cuisine/north-american.json");
+
+        given()
+                .pathParam(CUISINE_ID_PARAM, NON_EXISTENT_CUISINE_ID)
+                .body(northAmericanCuisineInputJson)
+                .contentType(ContentType.JSON)
+                .accept(ContentType.JSON)
+                .when()
+                .put(CUISINE_ID_MAPPING)
+                .then()
+                .statusCode(HttpStatus.NOT_FOUND.value());
+    }
+
+    @Test
+    public void shouldReturnStatus400WhenRegisteringCuisineWithoutName() {
+        String cuisineWithoutNameInputJson = super
+                .getContentFromResource("/payload/input/cuisine/cuisine-without-name.json");
+
+        given()
+                .body(cuisineWithoutNameInputJson)
+                .contentType(ContentType.JSON)
+                .accept(ContentType.JSON)
+                .when()
+                .post()
+                .then()
+                .statusCode(HttpStatus.BAD_REQUEST.value());
+    }
+
+    @Test
+    public void shouldReturnStatus409WhenDeletingCuisineInUse() {
+        given()
+                .pathParam(CUISINE_ID_PARAM, EXISTENT_AND_IN_USE_AMERICAN_CUISINE_ID)
+                .contentType(ContentType.JSON)
+                .accept(ContentType.JSON)
+                .when()
+                .delete(CUISINE_ID_MAPPING)
+                .then()
+                .statusCode(HttpStatus.CONFLICT.value());
     }
 
 }
