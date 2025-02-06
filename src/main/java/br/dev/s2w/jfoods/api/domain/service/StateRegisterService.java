@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 public class StateRegisterService {
@@ -22,10 +23,12 @@ public class StateRegisterService {
                 .orElseThrow(() -> new StateNotFoundException(stateId));
     }
 
+    @Transactional
     public State save(State state) {
         return stateRepository.save(state);
     }
 
+    @Transactional
     public void remove(Long stateId) {
         try {
             stateRepository.deleteById(stateId);

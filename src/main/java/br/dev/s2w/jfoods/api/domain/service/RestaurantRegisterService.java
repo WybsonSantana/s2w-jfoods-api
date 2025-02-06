@@ -6,6 +6,7 @@ import br.dev.s2w.jfoods.api.domain.model.Restaurant;
 import br.dev.s2w.jfoods.api.domain.repository.RestaurantRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 public class RestaurantRegisterService {
@@ -21,6 +22,7 @@ public class RestaurantRegisterService {
                 .orElseThrow(() -> new RestaurantNotFoundException(restaurantId));
     }
 
+    @Transactional
     public Restaurant save(Restaurant restaurant) {
         Long cuisineId = restaurant.getCuisine().getId();
         Cuisine currentCuisine = cuisineRegister.find(cuisineId);
