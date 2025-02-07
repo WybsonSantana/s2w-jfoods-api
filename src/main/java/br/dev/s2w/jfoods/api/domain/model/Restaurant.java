@@ -2,6 +2,7 @@ package br.dev.s2w.jfoods.api.domain.model;
 
 import br.dev.s2w.jfoods.api.core.validation.Groups;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import org.hibernate.annotations.CreationTimestamp;
@@ -38,6 +39,7 @@ public class Restaurant {
     @Column(name = "delivery_fee", nullable = false)
     private BigDecimal deliveryFee;
 
+    @JsonIgnoreProperties(value = "name", allowGetters = true)
     @Valid
     @ConvertGroup(from = Default.class, to = Groups.CuisineId.class)
     @NotNull
