@@ -1,7 +1,6 @@
 package br.dev.s2w.jfoods.api.domain.model;
 
 import br.dev.s2w.jfoods.api.core.validation.Groups;
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
@@ -26,7 +25,6 @@ public class Cuisine {
     @Column(nullable = false)
     private String name;
 
-    @JsonIgnore
     @OneToMany(mappedBy = "cuisine")
     private List<Restaurant> restaurants = new ArrayList<>();
 
