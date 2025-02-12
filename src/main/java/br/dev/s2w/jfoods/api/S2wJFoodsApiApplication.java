@@ -5,12 +5,16 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 
+import java.util.TimeZone;
+
 @SpringBootApplication
 @EnableJpaRepositories(repositoryBaseClass = CustomJpaRepositoryImpl.class)
-public class S2wJfoodsApiApplication {
+public class S2wJFoodsApiApplication {
 
     public static void main(String[] args) {
-        SpringApplication.run(S2wJfoodsApiApplication.class, args);
+        TimeZone.setDefault(TimeZone.getTimeZone("UTC"));
+
+        SpringApplication.run(S2wJFoodsApiApplication.class, args);
     }
 
 }
