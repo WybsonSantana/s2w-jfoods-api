@@ -7,7 +7,7 @@ import br.dev.s2w.jfoods.api.domain.model.Product;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
-import java.time.LocalDateTime;
+import java.time.OffsetDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -19,11 +19,11 @@ public abstract class RestaurantMixin {
     @JsonIgnore
     private Address address;
 
-    //@JsonIgnore
-    private LocalDateTime registrationDate;
+    @JsonIgnore
+    private OffsetDateTime registrationDate;
 
     @JsonIgnore
-    private LocalDateTime lastUpdateDate;
+    private OffsetDateTime lastUpdateDate;
 
     @JsonIgnore
     private List<PaymentMethod> paymentMethods = new ArrayList<>();

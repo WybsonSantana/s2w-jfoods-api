@@ -4,7 +4,7 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.Builder;
 import lombok.Getter;
 
-import java.time.LocalDateTime;
+import java.time.OffsetDateTime;
 import java.util.List;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
@@ -12,7 +12,7 @@ import java.util.List;
 @Builder
 public class Problem {
 
-    private LocalDateTime timestamp;
+    private OffsetDateTime timestamp;
 
     private Integer status;
 
