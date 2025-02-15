@@ -1,5 +1,7 @@
 package br.dev.s2w.jfoods.api.adapter.controller;
 
+import br.dev.s2w.jfoods.api.adapter.model.CuisineModel;
+import br.dev.s2w.jfoods.api.adapter.model.RestaurantModel;
 import br.dev.s2w.jfoods.api.domain.exception.BusinessException;
 import br.dev.s2w.jfoods.api.domain.exception.CuisineNotFoundException;
 import br.dev.s2w.jfoods.api.domain.model.Restaurant;
@@ -12,6 +14,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/restaurants")
@@ -24,37 +27,56 @@ public class RestaurantController {
     private RestaurantRegisterService restaurantRegister;
 
     @GetMapping
-    public List<Restaurant> list() {
-        return restaurantRepository.findAll();
+    public List<RestaurantModel> list() {
+        return toCollectionModel(restaurantRepository.findAll());
     }
 
     @GetMapping("/{restaurantId}")
-    public Restaurant find(@PathVariable Long restaurantId) {
-        return restaurantRegister.find(restaurantId);
+    public RestaurantModel find(@PathVariable Long restaurantId) {
+        return toModel(restaurantRegister.find(restaurantId));
     }
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public Restaurant add(@RequestBody @Valid Restaurant restaurant) {
+    public RestaurantModel add(@RequestBody @Valid Restaurant restaurant) {
         try {
-            return restaurantRegister.save(restaurant);
+            return toModel(restaurantRegister.save(restaurant));
         } catch (CuisineNotFoundException e) {
             throw new BusinessException(e.getMessage(), e);
         }
     }
 
     @PutMapping("/{restaurantId}")
-    public Restaurant update(@PathVariable Long restaurantId, @RequestBody @Valid Restaurant restaurant) {
+    public RestaurantModel update(@PathVariable Long restaurantId, @RequestBody @Valid Restaurant restaurant) {
         try {
             Restaurant currentRestaurant = restaurantRegister.find(restaurantId);
 
             BeanUtils.copyProperties(restaurant, currentRestaurant,
                     "id", "paymentMethods", "address", "registrationDate", "products");
 
-            return restaurantRegister.save(restaurant);
+            return toModel(restaurantRegister.save(restaurant));
         } catch (CuisineNotFoundException e) {
             throw new BusinessException(e.getMessage(), e);
         }
     }
 
+    private RestaurantModel toModel(Restaurant restaurant) {
+        CuisineModel cuisineModel = new CuisineModel();
+        cuisineModel.setId(restaurant.getCuisine().getId());
+        cuisineModel.setName(restaurant.getCuisine().getName());
+
+        RestaurantModel restaurantModel = new RestaurantModel();
+        restaurantModel.setId(restaurant.getId());
+        restaurantModel.setName(restaurant.getName());
+        restaurantModel.setDeliveryFee(restaurant.getDeliveryFee());
+        restaurantModel.setCuisine(cuisineModel);
+
+        return restaurantModel;
+    }
+
+    private List<RestaurantModel> toCollectionModel(List<Restaurant> restaurants) {
+        return restaurants.stream()
+                .map(this::toModel)
+                .collect(Collectors.toList());
+    }
 }
