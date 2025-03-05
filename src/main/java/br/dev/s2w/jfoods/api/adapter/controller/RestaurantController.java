@@ -2,8 +2,10 @@ package br.dev.s2w.jfoods.api.adapter.controller;
 
 import br.dev.s2w.jfoods.api.adapter.model.CuisineModel;
 import br.dev.s2w.jfoods.api.adapter.model.RestaurantModel;
+import br.dev.s2w.jfoods.api.adapter.model.input.RestaurantInput;
 import br.dev.s2w.jfoods.api.domain.exception.BusinessException;
 import br.dev.s2w.jfoods.api.domain.exception.CuisineNotFoundException;
+import br.dev.s2w.jfoods.api.domain.model.Cuisine;
 import br.dev.s2w.jfoods.api.domain.model.Restaurant;
 import br.dev.s2w.jfoods.api.domain.repository.RestaurantRepository;
 import br.dev.s2w.jfoods.api.domain.service.RestaurantRegisterService;
@@ -38,8 +40,10 @@ public class RestaurantController {
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public RestaurantModel add(@RequestBody @Valid Restaurant restaurant) {
+    public RestaurantModel add(@RequestBody @Valid RestaurantInput restaurantInput) {
         try {
+            Restaurant restaurant = toDomainObject(restaurantInput);
+
             return toModel(restaurantRegister.save(restaurant));
         } catch (CuisineNotFoundException e) {
             throw new BusinessException(e.getMessage(), e);
@@ -47,14 +51,16 @@ public class RestaurantController {
     }
 
     @PutMapping("/{restaurantId}")
-    public RestaurantModel update(@PathVariable Long restaurantId, @RequestBody @Valid Restaurant restaurant) {
+    public RestaurantModel update(@PathVariable Long restaurantId, @RequestBody @Valid RestaurantInput restaurantInput) {
         try {
+            Restaurant restaurant = toDomainObject(restaurantInput);
+
             Restaurant currentRestaurant = restaurantRegister.find(restaurantId);
 
             BeanUtils.copyProperties(restaurant, currentRestaurant,
                     "id", "paymentMethods", "address", "registrationDate", "products");
 
-            return toModel(restaurantRegister.save(restaurant));
+            return toModel(restaurantRegister.save(currentRestaurant));
         } catch (CuisineNotFoundException e) {
             throw new BusinessException(e.getMessage(), e);
         }
@@ -79,4 +85,17 @@ public class RestaurantController {
                 .map(this::toModel)
                 .collect(Collectors.toList());
     }
+
+    private Restaurant toDomainObject(RestaurantInput restaurantInput) {
+        Cuisine cuisine = new Cuisine();
+        cuisine.setId(restaurantInput.getCuisine().getId());
+
+        Restaurant restaurant = new Restaurant();
+        restaurant.setName(restaurantInput.getName());
+        restaurant.setDeliveryFee(restaurantInput.getDeliveryFee());
+        restaurant.setCuisine(cuisine);
+
+        return restaurant;
+    }
+
 }
