@@ -1,11 +1,11 @@
 package br.dev.s2w.jfoods.api.adapter.controller;
 
+import br.dev.s2w.jfoods.api.adapter.assembler.RestaurantInputDisassembler;
 import br.dev.s2w.jfoods.api.adapter.assembler.RestaurantModelAssembler;
 import br.dev.s2w.jfoods.api.adapter.model.RestaurantModel;
 import br.dev.s2w.jfoods.api.adapter.model.input.RestaurantInput;
 import br.dev.s2w.jfoods.api.domain.exception.BusinessException;
 import br.dev.s2w.jfoods.api.domain.exception.CuisineNotFoundException;
-import br.dev.s2w.jfoods.api.domain.model.Cuisine;
 import br.dev.s2w.jfoods.api.domain.model.Restaurant;
 import br.dev.s2w.jfoods.api.domain.repository.RestaurantRepository;
 import br.dev.s2w.jfoods.api.domain.service.RestaurantRegisterService;
@@ -30,6 +30,9 @@ public class RestaurantController {
     @Autowired
     private RestaurantModelAssembler restaurantModelAssembler;
 
+    @Autowired
+    private RestaurantInputDisassembler restaurantInputDisassembler;
+
     @GetMapping
     public List<RestaurantModel> list() {
         return restaurantModelAssembler.toCollectionModel(restaurantRepository.findAll());
@@ -44,7 +47,7 @@ public class RestaurantController {
     @ResponseStatus(HttpStatus.CREATED)
     public RestaurantModel add(@RequestBody @Valid RestaurantInput restaurantInput) {
         try {
-            Restaurant restaurant = toDomainObject(restaurantInput);
+            Restaurant restaurant = restaurantInputDisassembler.toDomainObject(restaurantInput);
 
             return restaurantModelAssembler.toModel(restaurantRegister.save(restaurant));
         } catch (CuisineNotFoundException e) {
@@ -55,7 +58,7 @@ public class RestaurantController {
     @PutMapping("/{restaurantId}")
     public RestaurantModel update(@PathVariable Long restaurantId, @RequestBody @Valid RestaurantInput restaurantInput) {
         try {
-            Restaurant restaurant = toDomainObject(restaurantInput);
+            Restaurant restaurant = restaurantInputDisassembler.toDomainObject(restaurantInput);
 
             Restaurant currentRestaurant = restaurantRegister.find(restaurantId);
 
@@ -66,18 +69,6 @@ public class RestaurantController {
         } catch (CuisineNotFoundException e) {
             throw new BusinessException(e.getMessage(), e);
         }
-    }
-
-    private Restaurant toDomainObject(RestaurantInput restaurantInput) {
-        Cuisine cuisine = new Cuisine();
-        cuisine.setId(restaurantInput.getCuisine().getId());
-
-        Restaurant restaurant = new Restaurant();
-        restaurant.setName(restaurantInput.getName());
-        restaurant.setDeliveryFee(restaurantInput.getDeliveryFee());
-        restaurant.setCuisine(cuisine);
-
-        return restaurant;
     }
 
 }
